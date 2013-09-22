@@ -1,0 +1,25 @@
+package com.wewrite;
+
+option java_package = "com.wewrite";
+option java_outer_classname = "EventProtos";
+
+message Event {
+	required int32 eventID = 1;
+	required date eventTime = 2;
+	required bool processed = 3;
+	required int32 location = 4;
+	optional string input = 5;
+	
+	enum EventType {
+   		INSERT = 0;
+   		REMOVE = 1;
+   		CURSORCHANGE = 2;
+ 	}
+}
+
+message User {
+	required int32 userID = 1;
+	required date timeJoined = 2;
+	optional bool timeLeft = 3;
+}
+
