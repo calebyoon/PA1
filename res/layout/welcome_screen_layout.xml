@@ -8,7 +8,8 @@
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:text="Create Session" 
-		android:onClick="openEditor"/>
+		android:onClick="openEditor"
+		android:id="@+id/createSession"/>
     
 	<Button
     	android:layout_height="wrap_content"
