@@ -14,13 +14,23 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.wewrite.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.wewrite.MainMenu"
+            android:label="@string/app_name"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.wewrite.MainActivity"
+            android:label="@string/app_name"
+            android:parentActivityName= "com.wewrite.MainMenu">
+            <meta-data 
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.wewrite.MainMenu"/>
+            
         </activity>
     </application>
 
