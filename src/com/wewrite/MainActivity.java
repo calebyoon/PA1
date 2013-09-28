@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
+import android.widget.Button;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import edu.umich.imlc.android.common.Utils;
 import edu.umich.imlc.collabrify.client.CollabrifyAdapter;
@@ -23,6 +26,8 @@ import edu.umich.imlc.collabrify.client.CollabrifyClient;
 import edu.umich.imlc.collabrify.client.CollabrifyListener;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+
+import MainMenu.src.com.wewrite.EventProtos.java;
 
 
 public class MainActivity extends Activity
@@ -278,5 +283,30 @@ public class MainActivity extends Activity
   {
     return false;
   }
+  
+  Stack<EventProtos> redoStack = new Stack<EventProtos>();
+  Stack<EventProtos> undoStack = new Stack<EventProtos>();
+  
+  Button redoButton = (Button) findViewById(R.id.redo);
+  Button undoButton = (Button) findViewById(R.id.undo);
 
+  public void redo(View v)
+  {
+    if(!redoStack.isEmpty())
+    {
+      EventProtos event = redoStack.pop();
+      undoStack.push(event);
+      event.run();
+    }
+  }
+  
+  public void undo(View v)
+  {
+    if(!undoStack.isEmpty())
+    {
+      EventProtos event = undoStack.pop();
+      redoStack.push(event);
+      event.run();
+    }
+  }
 }

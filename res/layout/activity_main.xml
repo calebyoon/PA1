@@ -26,13 +26,17 @@
 	    android:layout_width = "match_parent"
 	    android:layout_height= "wrap_content">
 	    <Button
+	         android:id="@+id/undo"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
+			android:onClick="undo"
 			android:text="undo" />
 	
 		<Button
+		     android:id="@+id/redo"
 	    	android:layout_height="wrap_content"
 		    android:layout_width="wrap_content"
+		    android:onClick="redo"
 		    android:text="redo" />
 	</LinearLayout>
 
