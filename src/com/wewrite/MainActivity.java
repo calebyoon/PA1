@@ -51,10 +51,15 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
     setContentView(R.layout.activity_main);
+    Button redoButton = (Button) findViewById(R.id.redo);
+    Button undoButton = (Button) findViewById(R.id.undo);
     tags.add("amchr.csyoon");
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
+    
+    Stack<EventProtos> redoStack = new Stack<EventProtos>();
+    Stack<EventProtos> undoStack = new Stack<EventProtos>();
 
     // do something with this later
     // withBaseFile = (CheckBox) findViewById((Integer) null);
@@ -160,9 +165,6 @@ public class MainActivity extends Activity
   
   Stack<EventProtos> redoStack = new Stack<EventProtos>();
   Stack<EventProtos> undoStack = new Stack<EventProtos>();
-  
-  //Button redoButton = (Button) findViewById(R.id.redo);
-  //Button undoButton = (Button) findViewById(R.id.undo);
 
   public void redo(View v)
   {
