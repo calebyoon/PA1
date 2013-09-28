@@ -30,6 +30,7 @@ import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 import com.wewrite.EventProtos;
 
 
+@SuppressWarnings("unused")
 public class MainActivity extends Activity
 {
   private static String TAG = "WeWrite";
