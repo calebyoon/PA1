@@ -61,22 +61,22 @@ public class MainActivity extends Activity
 
 
     boolean getLatestEvent = false;
-    
-    
+
+
     collabrifyListener = new CollabrifyAdapter()
     {
 
       @Override
       public void onDisconnect()
       {
-        Log.i(TAG, "disconnected");
+        Log.i(getTAG(), "disconnected");
         runOnUiThread(new Runnable()
         {
 
           @Override
           public void run()
           {
-            //createSession.setTitle("Create Session");
+            // createSession.setTitle("Create Session");
           }
         });
       }
@@ -85,18 +85,18 @@ public class MainActivity extends Activity
       public void onReceiveEvent(final long orderId, int subId,
           String eventType, final byte[] data)
       {
-        Utils.printMethodName(TAG);
-        Log.d(TAG, "RECEIVED SUB ID:" + subId);
-        
-        //if subid == mainactivity nextrevision
+        Utils.printMethodName(getTAG());
+        Log.d(getTAG(), "RECEIVED SUB ID:" + subId);
+
+        // if subid == mainactivity nextrevision
         // do something
-        
+
         runOnUiThread(new Runnable()
         {
           @Override
           public void run()
           {
-             //handle events
+            // handle events
           }
         });
       }
@@ -106,7 +106,7 @@ public class MainActivity extends Activity
       {
         if( sessionList.isEmpty() )
         {
-          Log.i(TAG, "No session available");
+          Log.i(getTAG(), "No session available");
           return;
         }
         List<String> sessionNames = new ArrayList<String>();
@@ -127,13 +127,13 @@ public class MainActivity extends Activity
               {
                 try
                 {
-                  sessionId = sessionList.get(which).id();
-                  sessionName = sessionList.get(which).name();
-                  myClient.joinSession(sessionId, null);
+                  setSessionId(sessionList.get(which).id());
+                  setSessionName(sessionList.get(which).name());
+                  getMyClient().joinSession(getSessionId(), null);
                 }
                 catch( CollabrifyException e )
                 {
-                  Log.e(TAG, "error on choose session", e);
+                  Log.e(getTAG(), "error on choose session", e);
                 }
               }
             });
@@ -152,15 +152,15 @@ public class MainActivity extends Activity
       @Override
       public void onSessionCreated(long id)
       {
-        Log.i(TAG, "Session created, id: " + id);
-        sessionId = id;
+        Log.i(getTAG(), "Session created, id: " + id);
+        setSessionId(id);
         runOnUiThread(new Runnable()
         {
 
           @Override
           public void run()
           {
-            //createSession.setEnabled(false);
+            // createSession.setEnabled(false);
           }
         });
       }
@@ -168,17 +168,17 @@ public class MainActivity extends Activity
       @Override
       public void onError(CollabrifyException e)
       {
-        Log.e(TAG, "error line 166 ", e);
+        Log.e(getTAG(), "error line 166 ", e);
       }
 
       @Override
       public void onSessionJoined(long maxOrderId, long baseFileSize)
       {
-        Log.i(TAG, "Session Joined");
+        Log.i(getTAG(), "Session Joined");
         if( baseFileSize > 0 )
         {
           // initialize buffer to receive base file
-          baseFileReceiveBuffer = new ByteArrayOutputStream((int) baseFileSize);
+          setBaseFileReceiveBuffer(new ByteArrayOutputStream((int) baseFileSize));
         }
         runOnUiThread(new Runnable()
         {
@@ -186,7 +186,7 @@ public class MainActivity extends Activity
           @Override
           public void run()
           {
-            //createSession.setTitle(sessionName);
+            // createSession.setTitle(sessionName);
           }
         });
       }
@@ -194,15 +194,15 @@ public class MainActivity extends Activity
 
     try
     {
-      myClient = new CollabrifyClient(this, "csyoon@umich.edu", "csyoon",
+      setMyClient(new CollabrifyClient(this, "csyoon@umich.edu", "csyoon",
           "441fall2013@umich.edu", "XY3721425NoScOpE", getLatestEvent,
-          collabrifyListener);
+          collabrifyListener));
     }
     catch( CollabrifyException e )
     {
       e.printStackTrace();
     }
-    
+
 
   }
 
@@ -228,7 +228,7 @@ public class MainActivity extends Activity
         try
         {
           Random rand = new Random();
-          sessionName = "amchr.csyoon " + rand.nextInt(Integer.MAX_VALUE);
+          setSessionName("amchr.csyoon " + rand.nextInt(Integer.MAX_VALUE));
 
           /*
            * if( false) { initialize basefile data for this example we will use
@@ -240,37 +240,37 @@ public class MainActivity extends Activity
            */
 
 
-          myClient.createSession(sessionName, tags, null, 0);
-          //createSession.setTitle(sessionName);
-          Log.i(TAG, "Session name is " + sessionName);
+          getMyClient().createSession(getSessionName(), tags, null, 0);
+          // createSession.setTitle(sessionName);
+          Log.i(getTAG(), "Session name is " + getSessionName());
         }
         catch( CollabrifyException e )
         {
-          Log.e(TAG, "error in create session ", e);
+          Log.e(getTAG(), "error in create session ", e);
         }
         return true;
 
       case R.id.joinSession:
         try
         {
-          myClient.requestSessionList(tags);
+          getMyClient().requestSessionList(tags);
         }
         catch( Exception e )
         {
-          Log.e(TAG, "error in join session", e);
+          Log.e(getTAG(), "error in join session", e);
         }
         return true;
       case R.id.leaveSession:
         try
         {
-          if( myClient.inSession() )
+          if( getMyClient().inSession() )
           {
-            myClient.leaveSession(false);
+            getMyClient().leaveSession(false);
           }
         }
         catch( CollabrifyException e )
         {
-          Log.e(TAG, "error in leave session", e);
+          Log.e(getTAG(), "error in leave session", e);
         }
         return true;
       default:
@@ -308,5 +308,56 @@ public class MainActivity extends Activity
       redoStack.push(event);
       event.run();
     }
+  }
+
+  public static String getTAG()
+  {
+    return TAG;
+  }
+
+  public static void setTAG(String tAG)
+  {
+    TAG = tAG;
+  }
+
+  public long getSessionId()
+  {
+    return sessionId;
+  }
+
+  public void setSessionId(long sessionId)
+  {
+    this.sessionId = sessionId;
+  }
+
+  public String getSessionName()
+  {
+    return sessionName;
+  }
+
+  public void setSessionName(String sessionName)
+  {
+    this.sessionName = sessionName;
+  }
+
+  public CollabrifyClient getMyClient()
+  {
+    return myClient;
+  }
+
+  public void setMyClient(CollabrifyClient myClient)
+  {
+    this.myClient = myClient;
+  }
+
+  public ByteArrayOutputStream getBaseFileReceiveBuffer()
+  {
+    return baseFileReceiveBuffer;
+  }
+
+  public void setBaseFileReceiveBuffer(
+      ByteArrayOutputStream baseFileReceiveBuffer)
+  {
+    this.baseFileReceiveBuffer = baseFileReceiveBuffer;
   }
 }
