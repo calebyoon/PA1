@@ -27,7 +27,7 @@ import edu.umich.imlc.collabrify.client.CollabrifyListener;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
-import MainMenu.src.com.wewrite.EventProtos.java;
+import com.wewrite.EventProtos;
 
 
 public class MainActivity extends Activity
@@ -63,134 +63,8 @@ public class MainActivity extends Activity
     boolean getLatestEvent = false;
 
 
-    collabrifyListener = new CollabrifyAdapter()
-    {
-
-      @Override
-      public void onDisconnect()
-      {
-        Log.i(getTAG(), "disconnected");
-        runOnUiThread(new Runnable()
-        {
-
-          @Override
-          public void run()
-          {
-            // createSession.setTitle("Create Session");
-          }
-        });
-      }
-
-      @Override
-      public void onReceiveEvent(final long orderId, int subId,
-          String eventType, final byte[] data)
-      {
-        Utils.printMethodName(getTAG());
-        Log.d(getTAG(), "RECEIVED SUB ID:" + subId);
-
-        // if subid == mainactivity nextrevision
-        // do something
-
-        runOnUiThread(new Runnable()
-        {
-          @Override
-          public void run()
-          {
-            // handle events
-          }
-        });
-      }
-
-      @Override
-      public void onReceiveSessionList(final List<CollabrifySession> sessionList)
-      {
-        if( sessionList.isEmpty() )
-        {
-          Log.i(getTAG(), "No session available");
-          return;
-        }
-        List<String> sessionNames = new ArrayList<String>();
-        for( CollabrifySession s : sessionList )
-        {
-          sessionNames.add(s.name());
-        }
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-            MainActivity.this);
-
-        builder.setTitle("Choose Session").setItems(
-            sessionNames.toArray(new String[sessionList.size()]),
-            new DialogInterface.OnClickListener()
-            {
-              @Override
-              public void onClick(DialogInterface dialog, int which)
-              {
-                try
-                {
-                  setSessionId(sessionList.get(which).id());
-                  setSessionName(sessionList.get(which).name());
-                  getMyClient().joinSession(getSessionId(), null);
-                }
-                catch( CollabrifyException e )
-                {
-                  Log.e(getTAG(), "error on choose session", e);
-                }
-              }
-            });
-
-        runOnUiThread(new Runnable()
-        {
-
-          @Override
-          public void run()
-          {
-            builder.show();
-          }
-        });
-      }
-
-      @Override
-      public void onSessionCreated(long id)
-      {
-        Log.i(getTAG(), "Session created, id: " + id);
-        setSessionId(id);
-        runOnUiThread(new Runnable()
-        {
-
-          @Override
-          public void run()
-          {
-            // createSession.setEnabled(false);
-          }
-        });
-      }
-
-      @Override
-      public void onError(CollabrifyException e)
-      {
-        Log.e(getTAG(), "error line 166 ", e);
-      }
-
-      @Override
-      public void onSessionJoined(long maxOrderId, long baseFileSize)
-      {
-        Log.i(getTAG(), "Session Joined");
-        if( baseFileSize > 0 )
-        {
-          // initialize buffer to receive base file
-          setBaseFileReceiveBuffer(new ByteArrayOutputStream((int) baseFileSize));
-        }
-        runOnUiThread(new Runnable()
-        {
-
-          @Override
-          public void run()
-          {
-            // createSession.setTitle(sessionName);
-          }
-        });
-      }
-    };
+    collabrifyListener = new CollabListener(this);
+    
 
     try
     {
@@ -287,8 +161,8 @@ public class MainActivity extends Activity
   Stack<EventProtos> redoStack = new Stack<EventProtos>();
   Stack<EventProtos> undoStack = new Stack<EventProtos>();
   
-  Button redoButton = (Button) findViewById(R.id.redo);
-  Button undoButton = (Button) findViewById(R.id.undo);
+  //Button redoButton = (Button) findViewById(R.id.redo);
+  //Button undoButton = (Button) findViewById(R.id.undo);
 
   public void redo(View v)
   {
@@ -296,7 +170,7 @@ public class MainActivity extends Activity
     {
       EventProtos event = redoStack.pop();
       undoStack.push(event);
-      event.run();
+      //event.run();
     }
   }
   
@@ -306,7 +180,7 @@ public class MainActivity extends Activity
     {
       EventProtos event = undoStack.pop();
       redoStack.push(event);
-      event.run();
+      //event.run();
     }
   }
 
