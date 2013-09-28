@@ -7,5 +7,7 @@
     <string name="createSession">Create Session</string>
     <string name="joinSession">Join Session</string>
     <string name="leaveSession">Leave Session</string>
+    <string name="undoButton">Undo</string>
+    <string name="redoButton">Redo</string>
 
 </resources>
