@@ -52,8 +52,8 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
     setContentView(R.layout.activity_main);
-    Button redoButton = (Button) findViewById(R.id.redo);
-    Button undoButton = (Button) findViewById(R.id.undo);
+    Button redoButton = (Button) findViewById(R.id.redoButton);
+    Button undoButton = (Button) findViewById(R.id.undoButton);
     tags.add("amchr.csyoon");
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
