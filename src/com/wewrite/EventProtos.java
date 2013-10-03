@@ -11,58 +11,100 @@ public final class EventProtos {
   public interface EventOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required int32 eventID = 1;
+    // optional string beforeText = 1;
     /**
-     * <code>required int32 eventID = 1;</code>
+     * <code>optional string beforeText = 1;</code>
      */
-    boolean hasEventID();
+    boolean hasBeforeText();
     /**
-     * <code>required int32 eventID = 1;</code>
+     * <code>optional string beforeText = 1;</code>
      */
-    int getEventID();
-
-    // required bool processed = 3;
+    java.lang.String getBeforeText();
     /**
-     * <code>required bool processed = 3;</code>
-     *
-     * <pre>
-     *required date eventTime = 2;
-     * </pre>
-     */
-    boolean hasProcessed();
-    /**
-     * <code>required bool processed = 3;</code>
-     *
-     * <pre>
-     *required date eventTime = 2;
-     * </pre>
-     */
-    boolean getProcessed();
-
-    // required int32 location = 4;
-    /**
-     * <code>required int32 location = 4;</code>
-     */
-    boolean hasLocation();
-    /**
-     * <code>required int32 location = 4;</code>
-     */
-    int getLocation();
-
-    // optional string input = 5;
-    /**
-     * <code>optional string input = 5;</code>
-     */
-    boolean hasInput();
-    /**
-     * <code>optional string input = 5;</code>
-     */
-    java.lang.String getInput();
-    /**
-     * <code>optional string input = 5;</code>
+     * <code>optional string beforeText = 1;</code>
      */
     com.google.protobuf.ByteString
-        getInputBytes();
+        getBeforeTextBytes();
+
+    // optional string afterText = 2;
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    boolean hasAfterText();
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    java.lang.String getAfterText();
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getAfterTextBytes();
+
+    // optional string diffText = 3;
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    boolean hasDiffText();
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    java.lang.String getDiffText();
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getDiffTextBytes();
+
+    // optional int32 start = 4;
+    /**
+     * <code>optional int32 start = 4;</code>
+     */
+    boolean hasStart();
+    /**
+     * <code>optional int32 start = 4;</code>
+     */
+    int getStart();
+
+    // optional int32 length = 5;
+    /**
+     * <code>optional int32 length = 5;</code>
+     */
+    boolean hasLength();
+    /**
+     * <code>optional int32 length = 5;</code>
+     */
+    int getLength();
+
+    // optional bool type = 6;
+    /**
+     * <code>optional bool type = 6;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>optional bool type = 6;</code>
+     */
+    boolean getType();
+
+    // optional int32 cursorLocationAfter = 7;
+    /**
+     * <code>optional int32 cursorLocationAfter = 7;</code>
+     */
+    boolean hasCursorLocationAfter();
+    /**
+     * <code>optional int32 cursorLocationAfter = 7;</code>
+     */
+    int getCursorLocationAfter();
+
+    // optional int32 cursorLocationBefore = 8;
+    /**
+     * <code>optional int32 cursorLocationBefore = 8;</code>
+     */
+    boolean hasCursorLocationBefore();
+    /**
+     * <code>optional int32 cursorLocationBefore = 8;</code>
+     */
+    int getCursorLocationBefore();
   }
   /**
    * Protobuf type {@code com.wewrite.Event}
@@ -115,24 +157,44 @@ public final class EventProtos {
               }
               break;
             }
-            case 8: {
+            case 10: {
               bitField0_ |= 0x00000001;
-              eventID_ = input.readInt32();
+              beforeText_ = input.readBytes();
               break;
             }
-            case 24: {
+            case 18: {
               bitField0_ |= 0x00000002;
-              processed_ = input.readBool();
+              afterText_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              diffText_ = input.readBytes();
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000004;
-              location_ = input.readInt32();
+              bitField0_ |= 0x00000008;
+              start_ = input.readInt32();
               break;
             }
-            case 42: {
-              bitField0_ |= 0x00000008;
-              input_ = input.readBytes();
+            case 40: {
+              bitField0_ |= 0x00000010;
+              length_ = input.readInt32();
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              type_ = input.readBool();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              cursorLocationAfter_ = input.readInt32();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000080;
+              cursorLocationBefore_ = input.readInt32();
               break;
             }
           }
@@ -174,168 +236,21 @@ public final class EventProtos {
       return PARSER;
     }
 
-    /**
-     * Protobuf enum {@code com.wewrite.Event.EventType}
-     */
-    public enum EventType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>INSERT = 0;</code>
-       */
-      INSERT(0, 0),
-      /**
-       * <code>REMOVE = 1;</code>
-       */
-      REMOVE(1, 1),
-      /**
-       * <code>CURSORCHANGE = 2;</code>
-       */
-      CURSORCHANGE(2, 2),
-      ;
-
-      /**
-       * <code>INSERT = 0;</code>
-       */
-      public static final int INSERT_VALUE = 0;
-      /**
-       * <code>REMOVE = 1;</code>
-       */
-      public static final int REMOVE_VALUE = 1;
-      /**
-       * <code>CURSORCHANGE = 2;</code>
-       */
-      public static final int CURSORCHANGE_VALUE = 2;
-
-
-      public final int getNumber() { return value; }
-
-      public static EventType valueOf(int value) {
-        switch (value) {
-          case 0: return INSERT;
-          case 1: return REMOVE;
-          case 2: return CURSORCHANGE;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<EventType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<EventType>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<EventType>() {
-              public EventType findValueByNumber(int number) {
-                return EventType.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.wewrite.EventProtos.Event.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final EventType[] VALUES = values();
-
-      public static EventType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private EventType(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:com.wewrite.Event.EventType)
-    }
-
     private int bitField0_;
-    // required int32 eventID = 1;
-    public static final int EVENTID_FIELD_NUMBER = 1;
-    private int eventID_;
+    // optional string beforeText = 1;
+    public static final int BEFORETEXT_FIELD_NUMBER = 1;
+    private java.lang.Object beforeText_;
     /**
-     * <code>required int32 eventID = 1;</code>
+     * <code>optional string beforeText = 1;</code>
      */
-    public boolean hasEventID() {
+    public boolean hasBeforeText() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int32 eventID = 1;</code>
+     * <code>optional string beforeText = 1;</code>
      */
-    public int getEventID() {
-      return eventID_;
-    }
-
-    // required bool processed = 3;
-    public static final int PROCESSED_FIELD_NUMBER = 3;
-    private boolean processed_;
-    /**
-     * <code>required bool processed = 3;</code>
-     *
-     * <pre>
-     *required date eventTime = 2;
-     * </pre>
-     */
-    public boolean hasProcessed() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required bool processed = 3;</code>
-     *
-     * <pre>
-     *required date eventTime = 2;
-     * </pre>
-     */
-    public boolean getProcessed() {
-      return processed_;
-    }
-
-    // required int32 location = 4;
-    public static final int LOCATION_FIELD_NUMBER = 4;
-    private int location_;
-    /**
-     * <code>required int32 location = 4;</code>
-     */
-    public boolean hasLocation() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required int32 location = 4;</code>
-     */
-    public int getLocation() {
-      return location_;
-    }
-
-    // optional string input = 5;
-    public static final int INPUT_FIELD_NUMBER = 5;
-    private java.lang.Object input_;
-    /**
-     * <code>optional string input = 5;</code>
-     */
-    public boolean hasInput() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string input = 5;</code>
-     */
-    public java.lang.String getInput() {
-      java.lang.Object ref = input_;
+    public java.lang.String getBeforeText() {
+      java.lang.Object ref = beforeText_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -343,51 +258,209 @@ public final class EventProtos {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          input_ = s;
+          beforeText_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string input = 5;</code>
+     * <code>optional string beforeText = 1;</code>
      */
     public com.google.protobuf.ByteString
-        getInputBytes() {
-      java.lang.Object ref = input_;
+        getBeforeTextBytes() {
+      java.lang.Object ref = beforeText_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        input_ = b;
+        beforeText_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
 
+    // optional string afterText = 2;
+    public static final int AFTERTEXT_FIELD_NUMBER = 2;
+    private java.lang.Object afterText_;
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    public boolean hasAfterText() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    public java.lang.String getAfterText() {
+      java.lang.Object ref = afterText_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          afterText_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string afterText = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getAfterTextBytes() {
+      java.lang.Object ref = afterText_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        afterText_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string diffText = 3;
+    public static final int DIFFTEXT_FIELD_NUMBER = 3;
+    private java.lang.Object diffText_;
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    public boolean hasDiffText() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    public java.lang.String getDiffText() {
+      java.lang.Object ref = diffText_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          diffText_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string diffText = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDiffTextBytes() {
+      java.lang.Object ref = diffText_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        diffText_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional int32 start = 4;
+    public static final int START_FIELD_NUMBER = 4;
+    private int start_;
+    /**
+     * <code>optional int32 start = 4;</code>
+     */
+    public boolean hasStart() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 start = 4;</code>
+     */
+    public int getStart() {
+      return start_;
+    }
+
+    // optional int32 length = 5;
+    public static final int LENGTH_FIELD_NUMBER = 5;
+    private int length_;
+    /**
+     * <code>optional int32 length = 5;</code>
+     */
+    public boolean hasLength() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int32 length = 5;</code>
+     */
+    public int getLength() {
+      return length_;
+    }
+
+    // optional bool type = 6;
+    public static final int TYPE_FIELD_NUMBER = 6;
+    private boolean type_;
+    /**
+     * <code>optional bool type = 6;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional bool type = 6;</code>
+     */
+    public boolean getType() {
+      return type_;
+    }
+
+    // optional int32 cursorLocationAfter = 7;
+    public static final int CURSORLOCATIONAFTER_FIELD_NUMBER = 7;
+    private int cursorLocationAfter_;
+    /**
+     * <code>optional int32 cursorLocationAfter = 7;</code>
+     */
+    public boolean hasCursorLocationAfter() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional int32 cursorLocationAfter = 7;</code>
+     */
+    public int getCursorLocationAfter() {
+      return cursorLocationAfter_;
+    }
+
+    // optional int32 cursorLocationBefore = 8;
+    public static final int CURSORLOCATIONBEFORE_FIELD_NUMBER = 8;
+    private int cursorLocationBefore_;
+    /**
+     * <code>optional int32 cursorLocationBefore = 8;</code>
+     */
+    public boolean hasCursorLocationBefore() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional int32 cursorLocationBefore = 8;</code>
+     */
+    public int getCursorLocationBefore() {
+      return cursorLocationBefore_;
+    }
+
     private void initFields() {
-      eventID_ = 0;
-      processed_ = false;
-      location_ = 0;
-      input_ = "";
+      beforeText_ = "";
+      afterText_ = "";
+      diffText_ = "";
+      start_ = 0;
+      length_ = 0;
+      type_ = false;
+      cursorLocationAfter_ = 0;
+      cursorLocationBefore_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasEventID()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasProcessed()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLocation()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -396,16 +469,28 @@ public final class EventProtos {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, eventID_);
+        output.writeBytes(1, getBeforeTextBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(3, processed_);
+        output.writeBytes(2, getAfterTextBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(4, location_);
+        output.writeBytes(3, getDiffTextBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(5, getInputBytes());
+        output.writeInt32(4, start_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(5, length_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBool(6, type_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeInt32(7, cursorLocationAfter_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeInt32(8, cursorLocationBefore_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -418,19 +503,35 @@ public final class EventProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, eventID_);
+          .computeBytesSize(1, getBeforeTextBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, processed_);
+          .computeBytesSize(2, getAfterTextBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, location_);
+          .computeBytesSize(3, getDiffTextBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getInputBytes());
+          .computeInt32Size(4, start_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, length_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, type_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, cursorLocationAfter_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, cursorLocationBefore_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -548,14 +649,22 @@ public final class EventProtos {
 
       public Builder clear() {
         super.clear();
-        eventID_ = 0;
+        beforeText_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        processed_ = false;
+        afterText_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
-        location_ = 0;
+        diffText_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        input_ = "";
+        start_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
+        length_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        type_ = false;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        cursorLocationAfter_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        cursorLocationBefore_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -587,19 +696,35 @@ public final class EventProtos {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.eventID_ = eventID_;
+        result.beforeText_ = beforeText_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.processed_ = processed_;
+        result.afterText_ = afterText_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.location_ = location_;
+        result.diffText_ = diffText_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.input_ = input_;
+        result.start_ = start_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.length_ = length_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.type_ = type_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.cursorLocationAfter_ = cursorLocationAfter_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.cursorLocationBefore_ = cursorLocationBefore_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -616,37 +741,41 @@ public final class EventProtos {
 
       public Builder mergeFrom(com.wewrite.EventProtos.Event other) {
         if (other == com.wewrite.EventProtos.Event.getDefaultInstance()) return this;
-        if (other.hasEventID()) {
-          setEventID(other.getEventID());
-        }
-        if (other.hasProcessed()) {
-          setProcessed(other.getProcessed());
-        }
-        if (other.hasLocation()) {
-          setLocation(other.getLocation());
-        }
-        if (other.hasInput()) {
-          bitField0_ |= 0x00000008;
-          input_ = other.input_;
+        if (other.hasBeforeText()) {
+          bitField0_ |= 0x00000001;
+          beforeText_ = other.beforeText_;
           onChanged();
+        }
+        if (other.hasAfterText()) {
+          bitField0_ |= 0x00000002;
+          afterText_ = other.afterText_;
+          onChanged();
+        }
+        if (other.hasDiffText()) {
+          bitField0_ |= 0x00000004;
+          diffText_ = other.diffText_;
+          onChanged();
+        }
+        if (other.hasStart()) {
+          setStart(other.getStart());
+        }
+        if (other.hasLength()) {
+          setLength(other.getLength());
+        }
+        if (other.hasType()) {
+          setType(other.getType());
+        }
+        if (other.hasCursorLocationAfter()) {
+          setCursorLocationAfter(other.getCursorLocationAfter());
+        }
+        if (other.hasCursorLocationBefore()) {
+          setCursorLocationBefore(other.getCursorLocationBefore());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasEventID()) {
-          
-          return false;
-        }
-        if (!hasProcessed()) {
-          
-          return false;
-        }
-        if (!hasLocation()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -669,191 +798,389 @@ public final class EventProtos {
       }
       private int bitField0_;
 
-      // required int32 eventID = 1;
-      private int eventID_ ;
+      // optional string beforeText = 1;
+      private java.lang.Object beforeText_ = "";
       /**
-       * <code>required int32 eventID = 1;</code>
+       * <code>optional string beforeText = 1;</code>
        */
-      public boolean hasEventID() {
+      public boolean hasBeforeText() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int32 eventID = 1;</code>
+       * <code>optional string beforeText = 1;</code>
        */
-      public int getEventID() {
-        return eventID_;
-      }
-      /**
-       * <code>required int32 eventID = 1;</code>
-       */
-      public Builder setEventID(int value) {
-        bitField0_ |= 0x00000001;
-        eventID_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 eventID = 1;</code>
-       */
-      public Builder clearEventID() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        eventID_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // required bool processed = 3;
-      private boolean processed_ ;
-      /**
-       * <code>required bool processed = 3;</code>
-       *
-       * <pre>
-       *required date eventTime = 2;
-       * </pre>
-       */
-      public boolean hasProcessed() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required bool processed = 3;</code>
-       *
-       * <pre>
-       *required date eventTime = 2;
-       * </pre>
-       */
-      public boolean getProcessed() {
-        return processed_;
-      }
-      /**
-       * <code>required bool processed = 3;</code>
-       *
-       * <pre>
-       *required date eventTime = 2;
-       * </pre>
-       */
-      public Builder setProcessed(boolean value) {
-        bitField0_ |= 0x00000002;
-        processed_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required bool processed = 3;</code>
-       *
-       * <pre>
-       *required date eventTime = 2;
-       * </pre>
-       */
-      public Builder clearProcessed() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        processed_ = false;
-        onChanged();
-        return this;
-      }
-
-      // required int32 location = 4;
-      private int location_ ;
-      /**
-       * <code>required int32 location = 4;</code>
-       */
-      public boolean hasLocation() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int32 location = 4;</code>
-       */
-      public int getLocation() {
-        return location_;
-      }
-      /**
-       * <code>required int32 location = 4;</code>
-       */
-      public Builder setLocation(int value) {
-        bitField0_ |= 0x00000004;
-        location_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 location = 4;</code>
-       */
-      public Builder clearLocation() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        location_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // optional string input = 5;
-      private java.lang.Object input_ = "";
-      /**
-       * <code>optional string input = 5;</code>
-       */
-      public boolean hasInput() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string input = 5;</code>
-       */
-      public java.lang.String getInput() {
-        java.lang.Object ref = input_;
+      public java.lang.String getBeforeText() {
+        java.lang.Object ref = beforeText_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
-          input_ = s;
+          beforeText_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string input = 5;</code>
+       * <code>optional string beforeText = 1;</code>
        */
       public com.google.protobuf.ByteString
-          getInputBytes() {
-        java.lang.Object ref = input_;
+          getBeforeTextBytes() {
+        java.lang.Object ref = beforeText_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          input_ = b;
+          beforeText_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string input = 5;</code>
+       * <code>optional string beforeText = 1;</code>
        */
-      public Builder setInput(
+      public Builder setBeforeText(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
-        input_ = value;
+  bitField0_ |= 0x00000001;
+        beforeText_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string input = 5;</code>
+       * <code>optional string beforeText = 1;</code>
        */
-      public Builder clearInput() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        input_ = getDefaultInstance().getInput();
+      public Builder clearBeforeText() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        beforeText_ = getDefaultInstance().getBeforeText();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string input = 5;</code>
+       * <code>optional string beforeText = 1;</code>
        */
-      public Builder setInputBytes(
+      public Builder setBeforeTextBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
-        input_ = value;
+  bitField0_ |= 0x00000001;
+        beforeText_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional string afterText = 2;
+      private java.lang.Object afterText_ = "";
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public boolean hasAfterText() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public java.lang.String getAfterText() {
+        java.lang.Object ref = afterText_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          afterText_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getAfterTextBytes() {
+        java.lang.Object ref = afterText_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          afterText_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public Builder setAfterText(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        afterText_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public Builder clearAfterText() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        afterText_ = getDefaultInstance().getAfterText();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string afterText = 2;</code>
+       */
+      public Builder setAfterTextBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        afterText_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional string diffText = 3;
+      private java.lang.Object diffText_ = "";
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public boolean hasDiffText() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public java.lang.String getDiffText() {
+        java.lang.Object ref = diffText_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          diffText_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDiffTextBytes() {
+        java.lang.Object ref = diffText_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          diffText_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public Builder setDiffText(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        diffText_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public Builder clearDiffText() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        diffText_ = getDefaultInstance().getDiffText();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string diffText = 3;</code>
+       */
+      public Builder setDiffTextBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        diffText_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 start = 4;
+      private int start_ ;
+      /**
+       * <code>optional int32 start = 4;</code>
+       */
+      public boolean hasStart() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 start = 4;</code>
+       */
+      public int getStart() {
+        return start_;
+      }
+      /**
+       * <code>optional int32 start = 4;</code>
+       */
+      public Builder setStart(int value) {
+        bitField0_ |= 0x00000008;
+        start_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 start = 4;</code>
+       */
+      public Builder clearStart() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        start_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 length = 5;
+      private int length_ ;
+      /**
+       * <code>optional int32 length = 5;</code>
+       */
+      public boolean hasLength() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 length = 5;</code>
+       */
+      public int getLength() {
+        return length_;
+      }
+      /**
+       * <code>optional int32 length = 5;</code>
+       */
+      public Builder setLength(int value) {
+        bitField0_ |= 0x00000010;
+        length_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 length = 5;</code>
+       */
+      public Builder clearLength() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        length_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional bool type = 6;
+      private boolean type_ ;
+      /**
+       * <code>optional bool type = 6;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional bool type = 6;</code>
+       */
+      public boolean getType() {
+        return type_;
+      }
+      /**
+       * <code>optional bool type = 6;</code>
+       */
+      public Builder setType(boolean value) {
+        bitField0_ |= 0x00000020;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool type = 6;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        type_ = false;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 cursorLocationAfter = 7;
+      private int cursorLocationAfter_ ;
+      /**
+       * <code>optional int32 cursorLocationAfter = 7;</code>
+       */
+      public boolean hasCursorLocationAfter() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional int32 cursorLocationAfter = 7;</code>
+       */
+      public int getCursorLocationAfter() {
+        return cursorLocationAfter_;
+      }
+      /**
+       * <code>optional int32 cursorLocationAfter = 7;</code>
+       */
+      public Builder setCursorLocationAfter(int value) {
+        bitField0_ |= 0x00000040;
+        cursorLocationAfter_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 cursorLocationAfter = 7;</code>
+       */
+      public Builder clearCursorLocationAfter() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        cursorLocationAfter_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 cursorLocationBefore = 8;
+      private int cursorLocationBefore_ ;
+      /**
+       * <code>optional int32 cursorLocationBefore = 8;</code>
+       */
+      public boolean hasCursorLocationBefore() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional int32 cursorLocationBefore = 8;</code>
+       */
+      public int getCursorLocationBefore() {
+        return cursorLocationBefore_;
+      }
+      /**
+       * <code>optional int32 cursorLocationBefore = 8;</code>
+       */
+      public Builder setCursorLocationBefore(int value) {
+        bitField0_ |= 0x00000080;
+        cursorLocationBefore_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 cursorLocationBefore = 8;</code>
+       */
+      public Builder clearCursorLocationBefore() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        cursorLocationBefore_ = 0;
         onChanged();
         return this;
       }
@@ -869,533 +1196,11 @@ public final class EventProtos {
     // @@protoc_insertion_point(class_scope:com.wewrite.Event)
   }
 
-  public interface UserOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // required int32 userID = 1;
-    /**
-     * <code>required int32 userID = 1;</code>
-     */
-    boolean hasUserID();
-    /**
-     * <code>required int32 userID = 1;</code>
-     */
-    int getUserID();
-
-    // optional bool timeLeft = 3;
-    /**
-     * <code>optional bool timeLeft = 3;</code>
-     *
-     * <pre>
-     *required date timeJoined = 2;
-     * </pre>
-     */
-    boolean hasTimeLeft();
-    /**
-     * <code>optional bool timeLeft = 3;</code>
-     *
-     * <pre>
-     *required date timeJoined = 2;
-     * </pre>
-     */
-    boolean getTimeLeft();
-  }
-  /**
-   * Protobuf type {@code com.wewrite.User}
-   */
-  public static final class User extends
-      com.google.protobuf.GeneratedMessage
-      implements UserOrBuilder {
-    // Use User.newBuilder() to construct.
-    private User(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private User(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final User defaultInstance;
-    public static User getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public User getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private User(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              userID_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000002;
-              timeLeft_ = input.readBool();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.wewrite.EventProtos.internal_static_com_wewrite_User_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.wewrite.EventProtos.internal_static_com_wewrite_User_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.wewrite.EventProtos.User.class, com.wewrite.EventProtos.User.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<User> PARSER =
-        new com.google.protobuf.AbstractParser<User>() {
-      public User parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new User(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<User> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // required int32 userID = 1;
-    public static final int USERID_FIELD_NUMBER = 1;
-    private int userID_;
-    /**
-     * <code>required int32 userID = 1;</code>
-     */
-    public boolean hasUserID() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required int32 userID = 1;</code>
-     */
-    public int getUserID() {
-      return userID_;
-    }
-
-    // optional bool timeLeft = 3;
-    public static final int TIMELEFT_FIELD_NUMBER = 3;
-    private boolean timeLeft_;
-    /**
-     * <code>optional bool timeLeft = 3;</code>
-     *
-     * <pre>
-     *required date timeJoined = 2;
-     * </pre>
-     */
-    public boolean hasTimeLeft() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional bool timeLeft = 3;</code>
-     *
-     * <pre>
-     *required date timeJoined = 2;
-     * </pre>
-     */
-    public boolean getTimeLeft() {
-      return timeLeft_;
-    }
-
-    private void initFields() {
-      userID_ = 0;
-      timeLeft_ = false;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      if (!hasUserID()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, userID_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(3, timeLeft_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, userID_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, timeLeft_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static com.wewrite.EventProtos.User parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static com.wewrite.EventProtos.User parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static com.wewrite.EventProtos.User parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.wewrite.EventProtos.User parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.wewrite.EventProtos.User prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code com.wewrite.User}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.wewrite.EventProtos.UserOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.wewrite.EventProtos.internal_static_com_wewrite_User_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.wewrite.EventProtos.internal_static_com_wewrite_User_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.wewrite.EventProtos.User.class, com.wewrite.EventProtos.User.Builder.class);
-      }
-
-      // Construct using com.wewrite.EventProtos.User.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        userID_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        timeLeft_ = false;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.wewrite.EventProtos.internal_static_com_wewrite_User_descriptor;
-      }
-
-      public com.wewrite.EventProtos.User getDefaultInstanceForType() {
-        return com.wewrite.EventProtos.User.getDefaultInstance();
-      }
-
-      public com.wewrite.EventProtos.User build() {
-        com.wewrite.EventProtos.User result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.wewrite.EventProtos.User buildPartial() {
-        com.wewrite.EventProtos.User result = new com.wewrite.EventProtos.User(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.userID_ = userID_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.timeLeft_ = timeLeft_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.wewrite.EventProtos.User) {
-          return mergeFrom((com.wewrite.EventProtos.User)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.wewrite.EventProtos.User other) {
-        if (other == com.wewrite.EventProtos.User.getDefaultInstance()) return this;
-        if (other.hasUserID()) {
-          setUserID(other.getUserID());
-        }
-        if (other.hasTimeLeft()) {
-          setTimeLeft(other.getTimeLeft());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasUserID()) {
-          
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.wewrite.EventProtos.User parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.wewrite.EventProtos.User) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // required int32 userID = 1;
-      private int userID_ ;
-      /**
-       * <code>required int32 userID = 1;</code>
-       */
-      public boolean hasUserID() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required int32 userID = 1;</code>
-       */
-      public int getUserID() {
-        return userID_;
-      }
-      /**
-       * <code>required int32 userID = 1;</code>
-       */
-      public Builder setUserID(int value) {
-        bitField0_ |= 0x00000001;
-        userID_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 userID = 1;</code>
-       */
-      public Builder clearUserID() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        userID_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // optional bool timeLeft = 3;
-      private boolean timeLeft_ ;
-      /**
-       * <code>optional bool timeLeft = 3;</code>
-       *
-       * <pre>
-       *required date timeJoined = 2;
-       * </pre>
-       */
-      public boolean hasTimeLeft() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional bool timeLeft = 3;</code>
-       *
-       * <pre>
-       *required date timeJoined = 2;
-       * </pre>
-       */
-      public boolean getTimeLeft() {
-        return timeLeft_;
-      }
-      /**
-       * <code>optional bool timeLeft = 3;</code>
-       *
-       * <pre>
-       *required date timeJoined = 2;
-       * </pre>
-       */
-      public Builder setTimeLeft(boolean value) {
-        bitField0_ |= 0x00000002;
-        timeLeft_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool timeLeft = 3;</code>
-       *
-       * <pre>
-       *required date timeJoined = 2;
-       * </pre>
-       */
-      public Builder clearTimeLeft() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        timeLeft_ = false;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:com.wewrite.User)
-    }
-
-    static {
-      defaultInstance = new User(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:com.wewrite.User)
-  }
-
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_com_wewrite_Event_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_wewrite_Event_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_wewrite_User_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_wewrite_User_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1406,12 +1211,12 @@ public final class EventProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\036src/com/wewrite/messages.proto\022\013com.we" +
-      "write\"\203\001\n\005Event\022\017\n\007eventID\030\001 \002(\005\022\021\n\tproc" +
-      "essed\030\003 \002(\010\022\020\n\010location\030\004 \002(\005\022\r\n\005input\030\005" +
-      " \001(\t\"5\n\tEventType\022\n\n\006INSERT\020\000\022\n\n\006REMOVE\020" +
-      "\001\022\020\n\014CURSORCHANGE\020\002\"(\n\004User\022\016\n\006userID\030\001 " +
-      "\002(\005\022\020\n\010timeLeft\030\003 \001(\010B\032\n\013com.wewriteB\013Ev" +
-      "entProtos"
+      "write\"\250\001\n\005Event\022\022\n\nbeforeText\030\001 \001(\t\022\021\n\ta" +
+      "fterText\030\002 \001(\t\022\020\n\010diffText\030\003 \001(\t\022\r\n\005star" +
+      "t\030\004 \001(\005\022\016\n\006length\030\005 \001(\005\022\014\n\004type\030\006 \001(\010\022\033\n" +
+      "\023cursorLocationAfter\030\007 \001(\005\022\034\n\024cursorLoca" +
+      "tionBefore\030\010 \001(\005B\032\n\013com.wewriteB\013EventPr" +
+      "otos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1423,13 +1228,7 @@ public final class EventProtos {
           internal_static_com_wewrite_Event_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_com_wewrite_Event_descriptor,
-              new java.lang.String[] { "EventID", "Processed", "Location", "Input", });
-          internal_static_com_wewrite_User_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_com_wewrite_User_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_com_wewrite_User_descriptor,
-              new java.lang.String[] { "UserID", "TimeLeft", });
+              new java.lang.String[] { "BeforeText", "AfterText", "DiffText", "Start", "Length", "Type", "CursorLocationAfter", "CursorLocationBefore", });
           return null;
         }
       };
