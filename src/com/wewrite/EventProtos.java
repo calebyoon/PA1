@@ -56,15 +56,15 @@ public final class EventProtos {
      */
     int getCursorChange();
 
-    // optional int32 undo = 8;
+    // optional bool undo = 8;
     /**
-     * <code>optional int32 undo = 8;</code>
+     * <code>optional bool undo = 8;</code>
      */
     boolean hasUndo();
     /**
-     * <code>optional int32 undo = 8;</code>
+     * <code>optional bool undo = 8;</code>
      */
-    int getUndo();
+    boolean getUndo();
   }
   /**
    * Protobuf type {@code com.wewrite.Event}
@@ -139,7 +139,7 @@ public final class EventProtos {
             }
             case 64: {
               bitField0_ |= 0x00000010;
-              undo_ = input.readInt32();
+              undo_ = input.readBool();
               break;
             }
           }
@@ -273,19 +273,19 @@ public final class EventProtos {
       return cursorChange_;
     }
 
-    // optional int32 undo = 8;
+    // optional bool undo = 8;
     public static final int UNDO_FIELD_NUMBER = 8;
-    private int undo_;
+    private boolean undo_;
     /**
-     * <code>optional int32 undo = 8;</code>
+     * <code>optional bool undo = 8;</code>
      */
     public boolean hasUndo() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional int32 undo = 8;</code>
+     * <code>optional bool undo = 8;</code>
      */
-    public int getUndo() {
+    public boolean getUndo() {
       return undo_;
     }
 
@@ -294,7 +294,7 @@ public final class EventProtos {
       moveType_ = 0;
       data_ = "";
       cursorChange_ = 0;
-      undo_ = 0;
+      undo_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -321,7 +321,7 @@ public final class EventProtos {
         output.writeInt32(7, cursorChange_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(8, undo_);
+        output.writeBool(8, undo_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -350,7 +350,7 @@ public final class EventProtos {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, undo_);
+          .computeBoolSize(8, undo_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -476,7 +476,7 @@ public final class EventProtos {
         bitField0_ = (bitField0_ & ~0x00000004);
         cursorChange_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
-        undo_ = 0;
+        undo_ = false;
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
@@ -759,35 +759,35 @@ public final class EventProtos {
         return this;
       }
 
-      // optional int32 undo = 8;
-      private int undo_ ;
+      // optional bool undo = 8;
+      private boolean undo_ ;
       /**
-       * <code>optional int32 undo = 8;</code>
+       * <code>optional bool undo = 8;</code>
        */
       public boolean hasUndo() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional int32 undo = 8;</code>
+       * <code>optional bool undo = 8;</code>
        */
-      public int getUndo() {
+      public boolean getUndo() {
         return undo_;
       }
       /**
-       * <code>optional int32 undo = 8;</code>
+       * <code>optional bool undo = 8;</code>
        */
-      public Builder setUndo(int value) {
+      public Builder setUndo(boolean value) {
         bitField0_ |= 0x00000010;
         undo_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 undo = 8;</code>
+       * <code>optional bool undo = 8;</code>
        */
       public Builder clearUndo() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        undo_ = 0;
+        undo_ = false;
         onChanged();
         return this;
       }
@@ -820,7 +820,7 @@ public final class EventProtos {
       "\n\016messages.proto\022\013com.wewrite\"[\n\005Event\022\016" +
       "\n\006userId\030\002 \001(\005\022\020\n\010moveType\030\005 \001(\005\022\014\n\004data" +
       "\030\006 \001(\t\022\024\n\014cursorChange\030\007 \001(\005\022\014\n\004undo\030\010 \001" +
-      "(\005B\032\n\013com.wewriteB\013EventProtos"
+      "(\010B\032\n\013com.wewriteB\013EventProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
