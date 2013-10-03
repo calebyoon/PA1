@@ -4,14 +4,11 @@ option java_package = "com.wewrite";
 option java_outer_classname = "EventProtos";
 
 message Event {
-	optional string beforeText = 1;
-	optional string afterText = 2;
-	optional string diffText = 3;
-	optional int32 start = 4;
-	optional int32 length = 5;
-	optional bool type = 6;
-	optional int32 cursorLocationAfter = 7;
-	optional int32 cursorLocationBefore = 8;	
+	optional int32 userId = 2;
+	optional int32 moveType = 5;
+	optional string data = 6;
+	optional int32 cursorChange = 7;
+	optional int32 undo = 8;	
 }
 
 
