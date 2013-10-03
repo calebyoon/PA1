@@ -14,6 +14,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import com.wewrite.EventProtos;
 @SuppressWarnings("unused")
 public class MainActivity extends Activity
 {
+  private String theText;
   private static String TAG = "WeWrite";
   private String sessionName;
   private CollabrifyClient myClient;
@@ -45,6 +48,7 @@ public class MainActivity extends Activity
   private long sessionId;
   private ByteArrayInputStream baseFileBuffer;
   private ByteArrayOutputStream baseFileReceiveBuffer;
+  private cursorWatcher editTextArea;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -58,11 +62,13 @@ public class MainActivity extends Activity
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
-    
+
+    editTextArea = (cursorWatcher) findViewById(R.id.editTextSimple);
+
     Stack<EventProtos> redoStack = new Stack<EventProtos>();
     Stack<EventProtos> undoStack = new Stack<EventProtos>();
 
-    // do something with this later
+    // do something with this later if we need a base file. if not whatever
     // withBaseFile = (CheckBox) findViewById((Integer) null);
 
 
@@ -70,7 +76,6 @@ public class MainActivity extends Activity
 
 
     collabrifyListener = new CollabListener(this);
-    
 
     try
     {
@@ -83,9 +88,44 @@ public class MainActivity extends Activity
       e.printStackTrace();
     }
 
+    editTextArea.addTextChangedListener(new TextWatcher()
+    {
+      //listener for the edit text area. this will handle add and remove
+      @Override
+      public void afterTextChanged(Editable arg0)
+      {
+        // TODO Auto-generated method stub
+        
+      }
 
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count,
+          int after)
+      {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count)
+      {
+        // TODO Auto-generated method stub
+        
+      }
+
+    });
   }
 
+  private void insertDeleteActions()
+  {
+    //add delete
+  }
+  
+  private void broadcastText(String op)
+  {
+    //also one of the members needs to be from the protofile.
+  }
+  
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
@@ -163,27 +203,27 @@ public class MainActivity extends Activity
   {
     return false;
   }
-  
+
   Stack<EventProtos> redoStack = new Stack<EventProtos>();
   Stack<EventProtos> undoStack = new Stack<EventProtos>();
 
   public void redo(View v)
   {
-    if(!redoStack.isEmpty())
+    if( !redoStack.isEmpty() )
     {
       EventProtos event = redoStack.pop();
       undoStack.push(event);
-      //event.run();
+      // event.run();
     }
   }
-  
+
   public void undo(View v)
   {
-    if(!undoStack.isEmpty())
+    if( !undoStack.isEmpty() )
     {
       EventProtos event = undoStack.pop();
       redoStack.push(event);
-      //event.run();
+      // event.run();
     }
   }
 
