@@ -3,9 +3,17 @@ package com.wewrite;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Log;
+
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.wewrite.EventProtos.Event;
+import com.wewrite.Commands;
+import com.wewrite.TheDevice;
+import com.wewrite.TheDevice.Operation;
+
 import edu.umich.imlc.android.common.Utils;
 import edu.umich.imlc.collabrify.client.CollabrifyAdapter;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
@@ -36,7 +44,7 @@ public class CollabListener extends CollabrifyAdapter {
   }
 
   @Override
-  public void onReceiveEvent(final long orderId, int subId,
+  public void onReceiveEvent(final long orderId, final int subId,
       String eventType, final byte[] data)
   {
     Utils.printMethodName(MainActivity.getTAG());
@@ -51,6 +59,95 @@ public class CollabListener extends CollabrifyAdapter {
       public void run()
       {
          //handle events
+        {
+          try 
+          {
+            //pull all the data from the protocol buffer
+            Event latestMove = Event.parseFrom(data);  
+            int userWhoMadeMove = latestMove.getUserId();
+            //if another user edits the document, all previous undo/redos
+            //can not be guaranteed to be legal moves
+            if (userWhoMadeMove != TheDevice.Id) 
+            {
+              TheDevice.undoList.clear();
+              TheDevice.redoList.clear();
+            }
+            
+            String moveData;
+            int moveType = latestMove.getMoveType();
+            int offsetValue = latestMove.getCursorChange();
+            boolean undoValue = latestMove.getUndo();
+            
+
+            if (!TheDevice.cursorList.containsKey(userWhoMadeMove)) // new user
+            {
+              TheDevice.cursorList.put(userWhoMadeMove, TheDevice.cursorList.get(TheDevice.Id) );
+            }
+            
+            // ---add----
+            if (moveType == 1) 
+            {
+              moveData = latestMove.getData();
+              if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+              {
+                Commands com = new Commands(TheDevice.Operation.ADD, moveData, offsetValue);
+                TheDevice.undoList.add(com);
+              }
+              TheDevice.AddShadow(userWhoMadeMove, offsetValue,
+                  moveData);
+            }
+            // ---delete----
+            else if (moveType == 2) 
+            {
+              moveData = latestMove.getData();
+              if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+              {
+                Commands com = new Commands(TheDevice.Operation.DELETE, moveData, offsetValue);
+                TheDevice.undoList.add(com);
+              }
+              TheDevice.DeleteShadow(userWhoMadeMove, offsetValue);
+            }
+            // ---cursorChange----
+            else
+            {
+              if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+              {
+                Commands com = new Commands(TheDevice.Operation.CURSOR, null, offsetValue);
+                TheDevice.undoList.add(com);
+              }
+              TheDevice.CursorChangeShadow(userWhoMadeMove,
+                  offsetValue);
+            }
+
+            // if synchronize texteditor is needed
+            if (userWhoMadeMove != TheDevice.Id || undoValue)
+            {
+              TheDevice.numDiffMove++;
+            }
+            
+            
+            if (TheDevice.lastsubId == subId) //come back to this. changed to final. might be a problem later
+            {
+              if (collabActivity.getContinuousCount() == 0 && TheDevice.numDiffMove > 0) // if local user is not typing
+              {
+                TheDevice.Synchronize();
+              }
+              else if (TheDevice.numDiffMove > 0)// if local user is typing, sync later
+              {               
+                TheDevice.needToSynchronize = true;
+              }
+              else //nothing is different from shadow
+              {
+                TheDevice.lastsubId = -1;
+              }
+            }
+            
+          } 
+          catch (InvalidProtocolBufferException e) {
+            Log.i("failed", "bad parse attempt: " + e);
+            e.printStackTrace();
+          }
+        }
       }
     });
   }

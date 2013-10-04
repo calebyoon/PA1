@@ -49,6 +49,8 @@ public class MainActivity extends Activity
   private ByteArrayInputStream baseFileBuffer;
   private ByteArrayOutputStream baseFileReceiveBuffer;
   private cursorWatcher editTextArea;
+  private long startTime;
+  private int continuousCount = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -71,6 +73,21 @@ public class MainActivity extends Activity
     // do something with this later if we need a base file. if not whatever
     // withBaseFile = (CheckBox) findViewById((Integer) null);
 
+    new Thread()
+    {
+      public void run()
+      {
+        startTime = System.currentTimeMillis();
+        while( true )
+        {
+          if( System.currentTimeMillis() - startTime >= 600
+              && getContinuousCount() != 0 )
+            insertDeleteActions();
+          else if( getContinuousCount() == 0 && TheDevice.needToSynchronize )
+            TheDevice.Synchronize();
+        }
+      }
+    }.start();
 
     boolean getLatestEvent = false;
 
@@ -90,7 +107,7 @@ public class MainActivity extends Activity
 
     editTextArea.addTextChangedListener(new TextWatcher()
     {
-      //listener for the edit text area. this will handle add and remove
+      // listener for the edit text area. this will handle add and remove
       @Override
       public void afterTextChanged(Editable arg0)
       {
@@ -103,14 +120,51 @@ public class MainActivity extends Activity
           int after)
       {
         // TODO Auto-generated method stub
-        
+        if (TheDevice.isTextSetManually) 
+        {
+          if (count > after) // for character delete
+          {
+            if (getContinuousCount() > 0)
+            {
+              insertDeleteActions();
+            }
+
+            startTime = System.currentTimeMillis();
+            setContinuousCount(getContinuousCount() - 1);
+            theText = s.toString().substring(start, start + count) + theText;
+          }
+        }
       }
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count)
       {
         // TODO Auto-generated method stub
-        
+        if (TheDevice.isTextSetManually) 
+        {
+          if (count < before) 
+          {}
+          else if (count > before) // character add
+          {
+
+            if (getContinuousCount() < 0)
+            {
+              insertDeleteActions();
+              
+            }
+
+            startTime = System.currentTimeMillis();
+            setContinuousCount(getContinuousCount() + 1);
+            theText += s.toString().substring(start,
+                start + count);
+          } 
+          else //not used
+          {}
+        } 
+        else 
+        {
+          TheDevice.isTextSetManually = true;
+        }
       }
 
     });
@@ -118,14 +172,14 @@ public class MainActivity extends Activity
 
   private void insertDeleteActions()
   {
-    //add delete
+    // add delete
   }
-  
+
   private void broadcastText(String op)
   {
-    //also one of the members needs to be from the protofile.
+    // also one of the members needs to be from the protofile.
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
@@ -151,7 +205,8 @@ public class MainActivity extends Activity
           setSessionName("amchr.csyoon " + rand.nextInt(Integer.MAX_VALUE));
 
           /*
-           * if( false) { initialize basefile data for this example we will use
+           * if( false) { 
+           * initialize basefile data for this example we will use
            * the session name as the data baseFileBuffer = new
            * ByteArrayInputStream(sessionName.getBytes());
            * 
@@ -276,5 +331,15 @@ public class MainActivity extends Activity
       ByteArrayOutputStream baseFileReceiveBuffer)
   {
     this.baseFileReceiveBuffer = baseFileReceiveBuffer;
+  }
+
+  public int getContinuousCount()
+  {
+    return continuousCount;
+  }
+
+  public void setContinuousCount(int continuousCount)
+  {
+    this.continuousCount = continuousCount;
   }
 }

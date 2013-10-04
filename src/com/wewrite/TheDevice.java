@@ -11,7 +11,7 @@ import com.wewrite.Commands;
 import android.widget.EditText;
 
 
-public class Device 
+public class TheDevice 
 {
   protected static int Id = new Random().nextInt(); 
   protected static EditText to_broadcast;
