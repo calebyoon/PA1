@@ -63,6 +63,7 @@ public class CollabListener extends CollabrifyAdapter {
           //pull all the data from the protocol buffer
           Event latestMove = Event.parseFrom(data);  
           int userWhoMadeMove = latestMove.getUserId();
+        
           //if another user edits the document, all previous undo/redos
           //can not be guaranteed to be legal moves
           if (userWhoMadeMove != TheDevice.Id) 
@@ -74,7 +75,7 @@ public class CollabListener extends CollabrifyAdapter {
           String moveData;
           int moveType = latestMove.getMoveType();
           int offsetValue = latestMove.getCursorChange();
-          boolean undoValue = latestMove.getUndo();
+          int undoValue = latestMove.getUndo();
           
 
           if (!TheDevice.cursorList.containsKey(userWhoMadeMove)) // new user
@@ -86,10 +87,11 @@ public class CollabListener extends CollabrifyAdapter {
           if (moveType == 1) 
           {
             moveData = latestMove.getData();
-            if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+            if (userWhoMadeMove == TheDevice.Id && undoValue != 1) //local move, so add to UndoList
             {
               Commands com = new Commands(TheDevice.Operation.ADD, moveData, offsetValue);
               TheDevice.undoList.add(com);
+              Log.d("wewrite", "add to undo list");
             }
             TheDevice.AddShadow(userWhoMadeMove, offsetValue,
                 moveData);
@@ -98,17 +100,18 @@ public class CollabListener extends CollabrifyAdapter {
           else if (moveType == 2) 
           {
             moveData = latestMove.getData();
-            if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+            if (userWhoMadeMove == TheDevice.Id && undoValue  != 1) //local move, so add to UndoList
             {
               Commands com = new Commands(TheDevice.Operation.DELETE, moveData, offsetValue);
               TheDevice.undoList.add(com);
+              Log.d("wewrite", "add to redo list");
             }
             TheDevice.DeleteShadow(userWhoMadeMove, offsetValue);
           }
           // ---cursorChange----
           else
           {
-            if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
+            if (userWhoMadeMove == TheDevice.Id && undoValue  != 1) //local move, so add to UndoList
             {
               Commands com = new Commands(TheDevice.Operation.CURSOR, null, offsetValue);
               TheDevice.undoList.add(com);
@@ -118,7 +121,7 @@ public class CollabListener extends CollabrifyAdapter {
           }
 
           // if synchronize texteditor is needed
-          if (userWhoMadeMove != TheDevice.Id || undoValue)
+          if (userWhoMadeMove != TheDevice.Id || undoValue != 0)
           {
             TheDevice.numDiffMove++;
           }

@@ -20,11 +20,11 @@ public class Commands
   
   //create a move in the protocol buffer format
   //to be sent to the Collabrify Client
-  public Event generateMoveMes(Boolean undo)
+  public Event generateMoveMes(int undo)
   {
     Event event;
-    if (!undo && this.operation == TheDevice.Operation.ADD || 
-      (undo && this.operation == TheDevice.Operation.DELETE)) 
+    if (undo != 1 && this.operation == TheDevice.Operation.ADD || 
+      (undo == 1  && this.operation == TheDevice.Operation.DELETE)) 
     //either an add, or an undo on a delete
     {
       event = Event.newBuilder()
@@ -35,8 +35,8 @@ public class Commands
           .setUndo(undo)
           .build();
     }
-    else if(!undo && this.operation == TheDevice.Operation.DELETE || 
-        (undo && this.operation == TheDevice.Operation.ADD))
+    else if(undo != 1 && this.operation == TheDevice.Operation.DELETE || 
+        (undo == 1 && this.operation == TheDevice.Operation.ADD))
       //either a delete, or an undo on an add
     {
       event = Event.newBuilder()
@@ -49,7 +49,7 @@ public class Commands
     }
     else //a cursor move
     {
-      if (undo)
+      if (undo == 1)
       {
         event = Event.newBuilder()
             .setUserId(TheDevice.Id)

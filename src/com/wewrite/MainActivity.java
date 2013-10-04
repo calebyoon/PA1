@@ -106,7 +106,7 @@ public class MainActivity extends Activity
         Commands com = TheDevice.Undo();
         if (com != null) 
         {
-          Event retmove = com.generateMoveMes(true);
+          Event retmove = com.generateMoveMes(1);
           broadcastText(retmove, "undo");
         }
       }
@@ -123,7 +123,7 @@ public class MainActivity extends Activity
         Commands com = TheDevice.Redo(); //broadcast move 
         if (com != null) 
         {
-          Event retmove = com.generateMoveMes(true);
+          Event retmove = com.generateMoveMes(2);
           broadcastText(retmove, "redo");
         }
       }
@@ -222,7 +222,7 @@ public class MainActivity extends Activity
           continuousCount);
 
       
-      retmove = com.generateMoveMes(false);
+      retmove = com.generateMoveMes(0);
       broadcastText(retmove, "add");
     } 
     else // delete
@@ -233,7 +233,7 @@ public class MainActivity extends Activity
           -continuousCount);
 
       
-      retmove = com.generateMoveMes(false);
+      retmove = com.generateMoveMes(0);
       broadcastText(retmove, "del");
     }
 
