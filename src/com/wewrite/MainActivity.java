@@ -21,6 +21,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import edu.umich.imlc.android.common.Utils;
 import edu.umich.imlc.collabrify.client.CollabrifyAdapter;
@@ -30,6 +32,7 @@ import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
 import com.wewrite.EventProtos;
+import com.wewrite.EventProtos.Event;
 
 
 @SuppressWarnings("unused")
@@ -58,8 +61,6 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
     setContentView(R.layout.activity_main);
-    Button redoButton = (Button) findViewById(R.id.redoButton);
-    Button undoButton = (Button) findViewById(R.id.undoButton);
     tags.add("amchr.csyoon");
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
@@ -67,8 +68,6 @@ public class MainActivity extends Activity
 
     editTextArea = (cursorWatcher) findViewById(R.id.editTextSimple);
 
-    Stack<EventProtos> redoStack = new Stack<EventProtos>();
-    Stack<EventProtos> undoStack = new Stack<EventProtos>();
 
     // do something with this later if we need a base file. if not whatever
     // withBaseFile = (CheckBox) findViewById((Integer) null);
@@ -89,21 +88,47 @@ public class MainActivity extends Activity
       }
     }.start();
 
-    boolean getLatestEvent = false;
+    
 
+    Button redoButton = (Button) findViewById(R.id.redoButton);
+    Button undoButton = (Button) findViewById(R.id.undoButton);
+    
+    undoButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) 
+      {
+        
+        if (continuousCount != 0)
+        {
+          insertDeleteActions();
+        }
 
-    collabrifyListener = new CollabListener(this);
+        Commands com = TheDevice.Undo();
+        if (com != null) 
+        {
+          Event retmove = com.generateMoveMes(true);
+          broadcastText(retmove, "undo");
+        }
+      }
+    });
+    redoButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) 
+      {
+        if (continuousCount != 0)
+        {
+          insertDeleteActions();
+        }
 
-    try
-    {
-      setMyClient(new CollabrifyClient(this, "csyoon@umich.edu", "csyoon",
-          "441fall2013@umich.edu", "XY3721425NoScOpE", getLatestEvent,
-          collabrifyListener));
-    }
-    catch( CollabrifyException e )
-    {
-      e.printStackTrace();
-    }
+        Commands com = TheDevice.Redo(); //broadcast move 
+        if (com != null) 
+        {
+          Event retmove = com.generateMoveMes(true);
+          broadcastText(retmove, "redo");
+        }
+      }
+    });
+    
 
     editTextArea.addTextChangedListener(new TextWatcher()
     {
@@ -168,16 +193,70 @@ public class MainActivity extends Activity
       }
 
     });
+    boolean getLatestEvent = false;
+
+
+    collabrifyListener = new CollabListener(this);
+
+    try
+    {
+      setMyClient(new CollabrifyClient(this, "csyoon@umich.edu", "csyoon",
+          "441fall2013@umich.edu", "XY3721425NoScOpE", getLatestEvent,
+          collabrifyListener));
+    }
+    catch( CollabrifyException e )
+    {
+      e.printStackTrace();
+    }
   }
 
   private void insertDeleteActions()
   {
     // add delete
+    Event retmove;
+    if (continuousCount > 0) // add
+    {
+      TheDevice.cursorLoc += continuousCount;
+
+      Commands com = new Commands(TheDevice.Operation.ADD, theText,
+          continuousCount);
+
+      
+      retmove = com.generateMoveMes(false);
+      broadcastText(retmove, "add");
+    } 
+    else // delete
+    {
+      TheDevice.cursorLoc += continuousCount;
+      
+      Commands com = new Commands(TheDevice.Operation.DELETE, theText,
+          -continuousCount);
+
+      
+      retmove = com.generateMoveMes(false);
+      broadcastText(retmove, "del");
+    }
+
+    continuousCount = 0;
+    theText = theText.substring(0, 0);
+
+    TheDevice.redoList.clear();
   }
 
-  private void broadcastText(String op)
+  private void broadcastText(Event retMove, String op)
   {
     // also one of the members needs to be from the protofile.
+    try 
+    {
+      TheDevice.lastsubId = myClient.broadcast(retMove.toByteArray(), op);
+      TheDevice.needToSynchronize = false;
+      Log.i("success", op + " broadcasting success");
+    } 
+    catch (CollabrifyException e) 
+    {
+      Log.i("failed", "broadcasting failed");
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -259,28 +338,6 @@ public class MainActivity extends Activity
     return false;
   }
 
-  Stack<EventProtos> redoStack = new Stack<EventProtos>();
-  Stack<EventProtos> undoStack = new Stack<EventProtos>();
-
-  public void redo(View v)
-  {
-    if( !redoStack.isEmpty() )
-    {
-      EventProtos event = redoStack.pop();
-      undoStack.push(event);
-      // event.run();
-    }
-  }
-
-  public void undo(View v)
-  {
-    if( !undoStack.isEmpty() )
-    {
-      EventProtos event = undoStack.pop();
-      redoStack.push(event);
-      // event.run();
-    }
-  }
 
   public static String getTAG()
   {
