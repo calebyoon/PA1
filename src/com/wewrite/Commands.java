@@ -7,11 +7,11 @@ import com.wewrite.EventProtos.Event;
 
 public class Commands
 {
-  User.Operation operation;
+  Device.Operation operation;
   public int offset;
   public String mes;
   
-  public Commands(User.Operation operationT, String mesT, int offsetT)
+  public Commands(Device.Operation operationT, String mesT, int offsetT)
   {
     operation = operationT;
     mes = mesT;
@@ -23,24 +23,24 @@ public class Commands
   public Event generateMoveMes(Boolean undo)
   {
     Event event;
-    if (!undo && this.operation == User.Operation.ADD || 
-      (undo && this.operation == User.Operation.DELETE)) 
+    if (!undo && this.operation == Device.Operation.ADD || 
+      (undo && this.operation == Device.Operation.DELETE)) 
     //either an add, or an undo on a delete
     {
       event = Event.newBuilder()
-          .setUserId(User.Id) 
+          .setUserId(Device.Id) 
           .setMoveType(1)
           .setData(this.mes)
           .setCursorChange(this.offset)
           .setUndo(undo)
           .build();
     }
-    else if(!undo && this.operation == User.Operation.DELETE || 
-        (undo && this.operation == User.Operation.ADD))
+    else if(!undo && this.operation == Device.Operation.DELETE || 
+        (undo && this.operation == Device.Operation.ADD))
       //either a delete, or an undo on an add
     {
       event = Event.newBuilder()
-          .setUserId(User.Id)
+          .setUserId(Device.Id)
           .setMoveType(2)
           .setData(this.mes)
           .setCursorChange(this.offset)
@@ -52,7 +52,7 @@ public class Commands
       if (undo)
       {
         event = Event.newBuilder()
-            .setUserId(User.Id)
+            .setUserId(Device.Id)
             .setMoveType(3)
             .setCursorChange(-this.offset)
             .setUndo(undo)
@@ -61,7 +61,7 @@ public class Commands
       else
       {
         event = Event.newBuilder()
-        .setUserId(User.Id) //need a user id
+        .setUserId(Device.Id) //need a user id
         .setMoveType(3)
         .setCursorChange(this.offset)
         .setUndo(undo)
