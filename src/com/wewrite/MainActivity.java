@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -61,7 +62,7 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
     setContentView(R.layout.activity_main);
-    tags.add("amchr.csyoon");
+    tags.add("amchr.csyoon test");
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
@@ -73,6 +74,7 @@ public class MainActivity extends Activity
     // withBaseFile = (CheckBox) findViewById((Integer) null);
 
     editTextArea = (cursorWatcher)findViewById(R.id.editTextSimple);
+    editTextArea.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     TheDevice.editTextArea = editTextArea;
     TheDevice.cursorList.put(TheDevice.Id, 0);
     
@@ -110,7 +112,7 @@ public class MainActivity extends Activity
         Commands com = TheDevice.Undo();
         if (com != null) 
         {
-          Event retmove = com.generateMoveMes(true);
+          Event retmove = com.generateMoveMes(1);
           broadcastText(retmove, "undo");
         }
       }
@@ -127,7 +129,7 @@ public class MainActivity extends Activity
         Commands com = TheDevice.Redo(); //broadcast move 
         if (com != null) 
         {
-          Event retmove = com.generateMoveMes(true);
+          Event retmove = com.generateMoveMes(2);
           broadcastText(retmove, "redo");
         }
       }
@@ -152,7 +154,7 @@ public class MainActivity extends Activity
 
           Commands com = new Commands(TheDevice.Operation.CURSOR, null,
               offset);
-          Event retmove = com.generateMoveMes(false); //broadcast move
+          Event retmove = com.generateMoveMes(0); //broadcast move
           broadcastText(retmove, "cur");
 
           TheDevice.redoList.clear();
@@ -256,7 +258,7 @@ public class MainActivity extends Activity
           continuousCount);
 
       
-      retmove = com.generateMoveMes(false);
+      retmove = com.generateMoveMes(0);
       broadcastText(retmove, "add");
     } 
     else // delete
@@ -267,7 +269,7 @@ public class MainActivity extends Activity
           -continuousCount);
 
       
-      retmove = com.generateMoveMes(false);
+      retmove = com.generateMoveMes(0);
       broadcastText(retmove, "del");
     }
 
@@ -315,7 +317,7 @@ public class MainActivity extends Activity
         try
         {
           Random rand = new Random();
-          setSessionName("amchr.csyoon " + rand.nextInt(Integer.MAX_VALUE));
+          setSessionName("amchr.csyoon test " + rand.nextInt(Integer.MAX_VALUE));
 
           /*
            * if( false) { 
