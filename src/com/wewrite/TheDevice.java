@@ -7,13 +7,14 @@ import java.util.Stack;
 
 import com.wewrite.Commands;
 
+import android.util.Log;
 import android.widget.EditText;
 
 
 public class TheDevice
 {
   protected static int Id = new Random().nextInt(); 
-  protected static EditText to_broadcast;
+  protected static cursorWatcher editTextArea;
   protected static boolean isTextSetManually = true;
   protected static int cursorLoc = 0;
 
@@ -55,10 +56,15 @@ public class TheDevice
   //update the displayed text with the proper text from shadow copy
   protected static void Synchronize()
   {
+    Log.d("wewrite", "59");
     isTextSetManually = false;
-    to_broadcast.setText(shadow);
-    to_broadcast.setSelection(cursorList.get(Id));
+    Log.d("wewrite", "61");
+    editTextArea.setText(shadow);
+    Log.d("wewrite", "63 " + cursorList.get(Id));
+    editTextArea.setSelection(cursorList.get(Id));
+    Log.d("wewrite", "65");
     cursorLoc =  cursorList.get(Id);
+    Log.d("wewrite", "67");
 
     needToSynchronize = false;
     lastsubId = -1;
@@ -74,7 +80,7 @@ public class TheDevice
   { 
     int shadowCursor = cursorList.get(userId);
     shadow = shadow.substring(0,shadowCursor) + msg + shadow.substring(shadowCursor, shadow.length());
-
+    Log.d("shadow", shadow);
     for (Map.Entry entry : cursorList.entrySet())
     { 
       if ((Integer)entry.getValue() >= shadowCursor)
@@ -91,7 +97,7 @@ public class TheDevice
       shadow = shadow.substring(shadowCursor, shadow.length() );
     else
       shadow = shadow.substring(0, shadowCursor-count) + shadow.substring(shadowCursor, shadow.length());
-
+    Log.d("shadow", shadow);
     for (Map.Entry entry : cursorList.entrySet())
     { 
       if ((Integer)entry.getValue() >= shadowCursor)

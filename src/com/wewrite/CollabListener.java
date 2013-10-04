@@ -50,19 +50,19 @@ public class CollabListener extends CollabrifyAdapter {
     Utils.printMethodName(MainActivity.getTAG());
     Log.d(MainActivity.getTAG(), "RECEIVED SUB ID:" + subId);
     
-    //if subid == mainactivity nextrevision
-    // do something
-    
     collabActivity.runOnUiThread(new Runnable()
     {
       @Override
       public void run()
       {
+        Log.d(MainActivity.getTAG(), "line 59");
         try 
         {
           //pull all the data from the protocol buffer
+          Log.d(MainActivity.getTAG(), "line 62");
           Event latestMove = Event.parseFrom(data);  
           int userWhoMadeMove = latestMove.getUserId();
+          Log.d(MainActivity.getTAG(), "line 65 ");
           //if another user edits the document, all previous undo/redos
           //can not be guaranteed to be legal moves
           if (userWhoMadeMove != TheDevice.Id) 
@@ -79,20 +79,31 @@ public class CollabListener extends CollabrifyAdapter {
 
           if (!TheDevice.cursorList.containsKey(userWhoMadeMove)) // new user
           {
+
+            Log.d(MainActivity.getTAG(), "line 83");
             TheDevice.cursorList.put(userWhoMadeMove, TheDevice.cursorList.get(TheDevice.Id) );
           }
           
           // ---add----
           if (moveType == 1) 
           {
+
+            Log.d(MainActivity.getTAG(), "line 91");
             moveData = latestMove.getData();
+
+            Log.d(MainActivity.getTAG(), "line 94 " + TheDevice.Id);
             if (userWhoMadeMove == TheDevice.Id && !undoValue) //local move, so add to UndoList
             {
+
+              Log.d(MainActivity.getTAG(), "line 98" + moveData);
               Commands com = new Commands(TheDevice.Operation.ADD, moveData, offsetValue);
               TheDevice.undoList.add(com);
             }
             TheDevice.AddShadow(userWhoMadeMove, offsetValue,
                 moveData);
+
+            Log.d(MainActivity.getTAG(), "line 105" + moveData);
+            Log.d(MainActivity.getTAG(), "line 101");
           }
           // ---delete----
           else if (moveType == 2) 
@@ -126,18 +137,24 @@ public class CollabListener extends CollabrifyAdapter {
           
           if (TheDevice.lastsubId == subId) //come back to this. changed to final. might be a problem later
           {
+
+            Log.d(MainActivity.getTAG(), "line 136");
             if (collabActivity.getContinuousCount() == 0 && TheDevice.numDiffMove > 0) // if local user is not typing
             {
               TheDevice.Synchronize();
             }
             else if (TheDevice.numDiffMove > 0)// if local user is typing, sync later
             {               
+
+              Log.d(MainActivity.getTAG(), "line 150");
               TheDevice.needToSynchronize = true;
             }
             else //nothing is different from shadow
             {
               TheDevice.lastsubId = -1;
             }
+
+            Log.d(MainActivity.getTAG(), "line 150");
           }
           
         } 
@@ -208,6 +225,11 @@ public class CollabListener extends CollabrifyAdapter {
       public void run()
       {
         //createSession.setEnabled(false);
+        TheDevice.initialize();
+        
+        collabActivity.getEditTextArea().setText("");
+        collabActivity.setTheText("");
+        collabActivity.setContinuousCount(0);
       }
     });
   }
@@ -234,6 +256,13 @@ public class CollabListener extends CollabrifyAdapter {
       public void run()
       {
         //createSession.setTitle(sessionName);
+        TheDevice.initialize();
+        //updated here
+        TheDevice.isTextSetManually = false; //change won't propogate
+        TheDevice.shadow = "";
+        //baseFileReceiveBuffer.toString();
+        collabActivity.setTheText("");
+        collabActivity.setContinuousCount(0);
       }
     });
   }

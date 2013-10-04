@@ -38,7 +38,7 @@ import com.wewrite.EventProtos.Event;
 @SuppressWarnings("unused")
 public class MainActivity extends Activity
 {
-  private String theText;
+  private String theText = "";
   private static String TAG = "WeWrite";
   private String sessionName;
   private CollabrifyClient myClient;
@@ -66,12 +66,16 @@ public class MainActivity extends Activity
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
 
-    editTextArea = (cursorWatcher) findViewById(R.id.editTextSimple);
+    //setEditTextArea((cursorWatcher) findViewById(R.id.editTextSimple));
 
 
     // do something with this later if we need a base file. if not whatever
     // withBaseFile = (CheckBox) findViewById((Integer) null);
 
+    editTextArea = (cursorWatcher)findViewById(R.id.editTextSimple);
+    TheDevice.editTextArea = editTextArea;
+    TheDevice.cursorList.put(TheDevice.Id, 0);
+    
     new Thread()
     {
       public void run()
@@ -129,8 +133,34 @@ public class MainActivity extends Activity
       }
     });
     
+    getEditTextArea().setOnClickListener(new View.OnClickListener() { //moving the cursor
+      @Override
+      public void onClick(View v) 
+      {
+        if (continuousCount != 0)
+        {
+          insertDeleteActions();
+        }
 
-    editTextArea.addTextChangedListener(new TextWatcher()
+        int cursorNewLoc = getEditTextArea().getSelectionEnd();
+        int offset = cursorNewLoc - TheDevice.cursorLoc;
+
+        if (offset != 0) 
+        {
+          getEditTextArea().setSelection(cursorNewLoc);
+          TheDevice.cursorLoc = cursorNewLoc;
+
+          Commands com = new Commands(TheDevice.Operation.CURSOR, null,
+              offset);
+          Event retmove = com.generateMoveMes(false); //broadcast move
+          broadcastText(retmove, "cur");
+
+          TheDevice.redoList.clear();
+        }
+      }
+    });
+
+    getEditTextArea().addTextChangedListener(new TextWatcher()
     {
       // listener for the edit text area. this will handle add and remove
       @Override
@@ -153,10 +183,11 @@ public class MainActivity extends Activity
             {
               insertDeleteActions();
             }
-
+            
             startTime = System.currentTimeMillis();
             setContinuousCount(getContinuousCount() - 1);
-            theText = s.toString().substring(start, start + count) + theText;
+            setTheText(s.toString().substring(start, start + count) + getTheText());
+            Log.i("WeWrite", s.toString() + " 190");
           }
         }
       }
@@ -177,11 +208,14 @@ public class MainActivity extends Activity
               insertDeleteActions();
               
             }
-
+            
             startTime = System.currentTimeMillis();
-            setContinuousCount(getContinuousCount() + 1);
-            theText += s.toString().substring(start,
-                start + count);
+            //setContinuousCount(getContinuousCount() + 1);
+            continuousCount++;
+            theText = s.toString().substring(start, start+count);
+            //setTheText(getTheText() + s.toString().substring(start, start + count));
+            Log.i("WeWrite", getTheText() + " 216");
+            Log.i("WeWrite", s.toString().substring(start, start+count) + " 217");
           } 
           else //not used
           {}
@@ -218,7 +252,7 @@ public class MainActivity extends Activity
     {
       TheDevice.cursorLoc += continuousCount;
 
-      Commands com = new Commands(TheDevice.Operation.ADD, theText,
+      Commands com = new Commands(TheDevice.Operation.ADD, getTheText(),
           continuousCount);
 
       
@@ -229,7 +263,7 @@ public class MainActivity extends Activity
     {
       TheDevice.cursorLoc += continuousCount;
       
-      Commands com = new Commands(TheDevice.Operation.DELETE, theText,
+      Commands com = new Commands(TheDevice.Operation.DELETE, getTheText(),
           -continuousCount);
 
       
@@ -238,7 +272,7 @@ public class MainActivity extends Activity
     }
 
     continuousCount = 0;
-    theText = theText.substring(0, 0);
+    setTheText(getTheText().substring(0, 0));
 
     TheDevice.redoList.clear();
   }
@@ -398,5 +432,26 @@ public class MainActivity extends Activity
   public void setContinuousCount(int continuousCount)
   {
     this.continuousCount = continuousCount;
+  }
+
+  public String getTheText()
+  {
+    return theText;
+  }
+
+  public void setTheText(String theText)
+  {
+    Log.i(getTAG(), " 440 " +theText);
+    this.theText = theText;
+  }
+
+  public cursorWatcher getEditTextArea()
+  {
+    return editTextArea;
+  }
+
+  public void setEditTextArea(cursorWatcher editTextArea)
+  {
+    this.editTextArea = editTextArea;
   }
 }

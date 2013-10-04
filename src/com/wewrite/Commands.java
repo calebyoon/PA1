@@ -1,5 +1,7 @@
 package com.wewrite;
 
+import android.util.Log;
+
 import com.wewrite.EventProtos.Event;
 
 //create user or variant that edits and synchronizes the text
