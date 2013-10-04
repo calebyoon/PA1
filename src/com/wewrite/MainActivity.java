@@ -187,7 +187,7 @@ public class MainActivity extends Activity
             }
             
             startTime = System.currentTimeMillis();
-            setContinuousCount(getContinuousCount() - 1);
+            continuousCount --;
             setTheText(s.toString().substring(start, start + count) + getTheText());
             Log.i("WeWrite", s.toString() + " 190");
           }
