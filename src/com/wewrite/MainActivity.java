@@ -188,7 +188,8 @@ public class MainActivity extends Activity
             
             startTime = System.currentTimeMillis();
             continuousCount --;
-            setTheText(s.toString().substring(start, start + count) + getTheText());
+            //setTheText(s.toString().substring(start, start + count) + getTheText());
+            theText = s.toString().substring(start, start + count) + theText;
             Log.i("WeWrite", s.toString() + " 190");
           }
         }
@@ -214,7 +215,7 @@ public class MainActivity extends Activity
             startTime = System.currentTimeMillis();
             //setContinuousCount(getContinuousCount() + 1);
             continuousCount++;
-            theText = s.toString().substring(start, start+count);
+            theText += s.toString().substring(start, start+count);
             //setTheText(getTheText() + s.toString().substring(start, start + count));
             Log.i("WeWrite", getTheText() + " 216");
             Log.i("WeWrite", s.toString().substring(start, start+count) + " 217");
