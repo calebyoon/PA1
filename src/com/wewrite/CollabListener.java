@@ -65,11 +65,14 @@ public class CollabListener extends CollabrifyAdapter {
           Log.d(MainActivity.getTAG(), "line 65 ");
           //if another user edits the document, all previous undo/redos
           //can not be guaranteed to be legal moves
-          /*if (userWhoMadeMove != TheDevice.Id) 
+          
+          if (userWhoMadeMove != TheDevice.Id) 
           {
-            TheDevice.undoList.clear();
-            TheDevice.redoList.clear();
-          }*/
+            //TheDevice.undoList.clear();
+            //TheDevice.redoList.clear();
+            TheDevice.undoList.pop();
+            
+          }
           
           String moveData;
           int moveType = latestMove.getMoveType();

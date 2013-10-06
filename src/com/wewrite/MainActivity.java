@@ -143,7 +143,8 @@ public class MainActivity extends Activity
         {
           insertDeleteActions();
         }
-
+        /////////////////////// 
+        /////////////////////// something wrong with on click text area cursor position
         int cursorNewLoc = getEditTextArea().getSelectionEnd();
         int offset = cursorNewLoc - TheDevice.cursorLoc;
 
