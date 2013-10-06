@@ -55,22 +55,23 @@ public class CollabListener extends CollabrifyAdapter {
       @Override
       public void run()
       {
-        Log.d(MainActivity.getTAG(), "line 59");
         try 
         {
           //pull all the data from the protocol buffer
-          Log.d(MainActivity.getTAG(), "line 62");
-          Event latestMove = Event.parseFrom(data);  
+          Event latestMove = Event.parseFrom(data); 
+          Log.d("undo", "latest move data " + latestMove.getUserId());
           int userWhoMadeMove = latestMove.getUserId();
-          Log.d(MainActivity.getTAG(), "line 65 ");
           //if another user edits the document, all previous undo/redos
           //can not be guaranteed to be legal moves
+          if (!TheDevice.undoList.empty())
+            Log.d("undo", TheDevice.undoList.peek().mes);
           
           if (userWhoMadeMove != TheDevice.Id) 
           {
             //TheDevice.undoList.clear();
             //TheDevice.redoList.clear();
-            TheDevice.undoList.pop();
+            if (!TheDevice.undoList.empty())
+              TheDevice.undoList.pop();
             
           }
           
@@ -82,31 +83,22 @@ public class CollabListener extends CollabrifyAdapter {
 
           if (!TheDevice.cursorList.containsKey(userWhoMadeMove)) // new user
           {
-
-            Log.d(MainActivity.getTAG(), "line 83");
             TheDevice.cursorList.put(userWhoMadeMove, TheDevice.cursorList.get(TheDevice.Id) );
           }
           
           // ---add----
           if (moveType == 1) 
           {
-
-            Log.d(MainActivity.getTAG(), "line 91");
             moveData = latestMove.getData();
-            Log.d(MainActivity.getTAG(), "line 94 " + TheDevice.Id);
             if (userWhoMadeMove == TheDevice.Id && undoValue != 1) //local move, so add to UndoList
             {
-
-              Log.d(MainActivity.getTAG(), "line 98" + moveData);
+              Log.d("undo", TheDevice.Id + " " + userWhoMadeMove);
               Commands com = new Commands(TheDevice.Operation.ADD, moveData, offsetValue);
               TheDevice.undoList.add(com);
-              Log.d("wewrite", "add to undo list");
             }
             TheDevice.AddShadow(userWhoMadeMove, offsetValue,
                 moveData);
 
-            Log.d(MainActivity.getTAG(), "line 105" + moveData);
-            Log.d(MainActivity.getTAG(), "line 101");
           }
           // ---delete----
           else if (moveType == 2) 
@@ -116,7 +108,6 @@ public class CollabListener extends CollabrifyAdapter {
             {
               Commands com = new Commands(TheDevice.Operation.DELETE, moveData, offsetValue);
               TheDevice.undoList.add(com);
-              Log.d("wewrite", "add to redo list");
             }
             TheDevice.DeleteShadow(userWhoMadeMove, offsetValue);
           }
@@ -142,7 +133,6 @@ public class CollabListener extends CollabrifyAdapter {
           if (TheDevice.lastsubId == subId) //come back to this. changed to final. might be a problem later
           {
 
-            Log.d(MainActivity.getTAG(), "line 136");
             if (collabActivity.getContinuousCount() == 0 && TheDevice.numDiffMove > 0) // if local user is not typing
             {
               TheDevice.Synchronize();
@@ -150,7 +140,6 @@ public class CollabListener extends CollabrifyAdapter {
             else if (TheDevice.numDiffMove > 0)// if local user is typing, sync later
             {               
 
-              Log.d(MainActivity.getTAG(), "line 150");
               TheDevice.needToSynchronize = true;
             }
             else //nothing is different from shadow
@@ -158,7 +147,6 @@ public class CollabListener extends CollabrifyAdapter {
               TheDevice.lastsubId = -1;
             }
 
-            Log.d(MainActivity.getTAG(), "line 150");
           }
           
         } 

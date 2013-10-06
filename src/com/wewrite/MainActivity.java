@@ -67,17 +67,17 @@ public class MainActivity extends Activity
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
 
-    //setEditTextArea((cursorWatcher) findViewById(R.id.editTextSimple));
+    // setEditTextArea((cursorWatcher) findViewById(R.id.editTextSimple));
 
 
     // do something with this later if we need a base file. if not whatever
     // withBaseFile = (CheckBox) findViewById((Integer) null);
 
-    editTextArea = (cursorWatcher)findViewById(R.id.editTextSimple);
+    editTextArea = (cursorWatcher) findViewById(R.id.editTextSimple);
     editTextArea.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     TheDevice.editTextArea = editTextArea;
     TheDevice.cursorList.put(TheDevice.Id, 0);
-    
+
     new Thread()
     {
       public void run()
@@ -94,74 +94,77 @@ public class MainActivity extends Activity
       }
     }.start();
 
-    
 
     Button redoButton = (Button) findViewById(R.id.redoButton);
     Button undoButton = (Button) findViewById(R.id.undoButton);
-    
-    undoButton.setOnClickListener(new OnClickListener() {
+
+    undoButton.setOnClickListener(new OnClickListener()
+    {
       @Override
-      public void onClick(View v) 
+      public void onClick(View v)
       {
-        
-        if (continuousCount != 0)
+
+        if( continuousCount != 0 )
         {
           insertDeleteActions();
         }
 
         Commands com = TheDevice.Undo();
-        if (com != null) 
+        if( com != null )
         {
           Event retmove = com.generateMoveMes(1);
           broadcastText(retmove, "undo");
         }
       }
     });
-    redoButton.setOnClickListener(new OnClickListener() {
+    redoButton.setOnClickListener(new OnClickListener()
+    {
       @Override
-      public void onClick(View v) 
+      public void onClick(View v)
       {
-        if (continuousCount != 0)
+        if( continuousCount != 0 )
         {
           insertDeleteActions();
         }
 
-        Commands com = TheDevice.Redo(); //broadcast move 
-        if (com != null) 
+        Commands com = TheDevice.Redo(); // broadcast move
+        if( com != null )
         {
           Event retmove = com.generateMoveMes(2);
           broadcastText(retmove, "redo");
         }
       }
     });
-    
-    getEditTextArea().setOnClickListener(new View.OnClickListener() { //moving the cursor
-      @Override
-      public void onClick(View v) 
-      {
-        if (continuousCount != 0)
-        {
-          insertDeleteActions();
-        }
-        /////////////////////// 
-        /////////////////////// something wrong with on click text area cursor position
-        int cursorNewLoc = getEditTextArea().getSelectionEnd();
-        int offset = cursorNewLoc - TheDevice.cursorLoc;
 
-        if (offset != 0) 
-        {
-          getEditTextArea().setSelection(cursorNewLoc);
-          TheDevice.cursorLoc = cursorNewLoc;
+    getEditTextArea().setOnClickListener(new View.OnClickListener()
+    { // moving the cursor
+          @Override
+          public void onClick(View v)
+          {
+            if( continuousCount != 0 )
+            {
+              insertDeleteActions();
+            }
+            // /////////////////////
+            // ///////////////////// something wrong with on click text area
+            // cursor position
+            int cursorNewLoc = getEditTextArea().getSelectionEnd();
+            int offset = cursorNewLoc - TheDevice.cursorLoc;
 
-          Commands com = new Commands(TheDevice.Operation.CURSOR, null,
-              offset);
-          Event retmove = com.generateMoveMes(0); //broadcast move
-          broadcastText(retmove, "cur");
+            if( offset != 0 )
+            {
+              getEditTextArea().setSelection(cursorNewLoc);
+              TheDevice.cursorLoc = cursorNewLoc;
 
-          TheDevice.redoList.clear();
-        }
-      }
-    });
+              Commands com = new Commands(TheDevice.Operation.CURSOR, null,
+                  offset);
+              Event retmove = com.generateMoveMes(0); // broadcast move
+              broadcastText(retmove, "cur");
+
+              TheDevice.redoList.clear();
+            }
+          }
+        });
 
     getEditTextArea().addTextChangedListener(new TextWatcher()
     {
@@ -170,7 +173,7 @@ public class MainActivity extends Activity
       public void afterTextChanged(Editable arg0)
       {
         // TODO Auto-generated method stub
-        
+
       }
 
       @Override
@@ -178,20 +181,20 @@ public class MainActivity extends Activity
           int after)
       {
         // TODO Auto-generated method stub
-        if (TheDevice.isTextSetManually) 
+        if( TheDevice.isTextSetManually )
         {
-          if (count > after) // for character delete
+          if( count > after ) // for character delete
           {
-            if (getContinuousCount() > 0)
+            if( getContinuousCount() > 0 )
             {
               insertDeleteActions();
             }
-            
+
             startTime = System.currentTimeMillis();
-            continuousCount --;
-            //setTheText(s.toString().substring(start, start + count) + getTheText());
+            continuousCount--;
+            // setTheText(s.toString().substring(start, start + count) +
+            // getTheText());
             theText = s.toString().substring(start, start + count) + theText;
-            Log.i("WeWrite", s.toString() + " 190");
           }
         }
       }
@@ -200,31 +203,33 @@ public class MainActivity extends Activity
       public void onTextChanged(CharSequence s, int start, int before, int count)
       {
         // TODO Auto-generated method stub
-        if (TheDevice.isTextSetManually) 
+        if( TheDevice.isTextSetManually )
         {
-          if (count < before) 
-          {}
-          else if (count > before) // character add
+          if( count < before )
+          {
+          }
+          else if( count > before ) // character add
           {
 
-            if (getContinuousCount() < 0)
+            if( getContinuousCount() < 0 )
             {
               insertDeleteActions();
-              
+
             }
-            
+
             startTime = System.currentTimeMillis();
-            //setContinuousCount(getContinuousCount() + 1);
+            // setContinuousCount(getContinuousCount() + 1);
             continuousCount++;
-            theText += s.toString().substring(start, start+count);
-            //setTheText(getTheText() + s.toString().substring(start, start + count));
-            Log.i("WeWrite", getTheText() + " 216");
-            Log.i("WeWrite", s.toString().substring(start, start+count) + " 217");
-          } 
-          else //not used
-          {}
-        } 
-        else 
+            theText += s.toString().substring(start, start + count);
+            // setTheText(getTheText() + s.toString().substring(start, start +
+            // count))
+          }
+          else
+          // not used
+          {
+          }
+        }
+        else
         {
           TheDevice.isTextSetManually = true;
         }
@@ -252,25 +257,26 @@ public class MainActivity extends Activity
   {
     // add delete
     Event retmove;
-    if (continuousCount > 0) // add
+    if( continuousCount > 0 ) // add
     {
       TheDevice.cursorLoc += continuousCount;
 
       Commands com = new Commands(TheDevice.Operation.ADD, getTheText(),
           continuousCount);
 
-      
+
       retmove = com.generateMoveMes(0);
       broadcastText(retmove, "add");
-    } 
-    else // delete
+    }
+    else
+    // delete
     {
       TheDevice.cursorLoc += continuousCount;
-      
+
       Commands com = new Commands(TheDevice.Operation.DELETE, getTheText(),
           -continuousCount);
 
-      
+
       retmove = com.generateMoveMes(0);
       broadcastText(retmove, "del");
     }
@@ -284,13 +290,13 @@ public class MainActivity extends Activity
   private void broadcastText(Event retMove, String op)
   {
     // also one of the members needs to be from the protofile.
-    try 
+    try
     {
       TheDevice.lastsubId = myClient.broadcast(retMove.toByteArray(), op);
       TheDevice.needToSynchronize = false;
       Log.i("success", op + " broadcasting success");
-    } 
-    catch (CollabrifyException e) 
+    }
+    catch( CollabrifyException e )
     {
       Log.i("failed", "broadcasting failed");
       e.printStackTrace();
@@ -322,8 +328,7 @@ public class MainActivity extends Activity
           setSessionName("amchr.csyoon test " + rand.nextInt(Integer.MAX_VALUE));
 
           /*
-           * if( false) { 
-           * initialize basefile data for this example we will use
+           * if( false) { initialize basefile data for this example we will use
            * the session name as the data baseFileBuffer = new
            * ByteArrayInputStream(sessionName.getBytes());
            * 
@@ -445,7 +450,7 @@ public class MainActivity extends Activity
 
   public void setTheText(String theText)
   {
-    Log.i(getTAG(), " 440 " +theText);
+    Log.i(getTAG(), " 440 " + theText);
     this.theText = theText;
   }
 
