@@ -13,118 +13,52 @@ import android.widget.EditText;
 
 public class TheDevice
 {
-  protected static int Id = new Random().nextInt(); 
+  protected static int deviceId = new Random().nextInt(); 
   protected static cursorWatcher editTextArea;
-  protected static boolean isTextSetManually = true;
-  protected static int cursorLoc = 0;
-
-  public static String shadow = ""; 
-
+  protected static boolean setOnDevice = true;
+  protected static int cursorPos = 0;
+  public static String correctText = ""; 
   public static int lastsubId = -1;
-  public static boolean needToSynchronize = false;  
+  public static boolean unmatched = false;  
   public static int numDiffMove = 0;
-
-  protected static Stack<Commands> 
-      undoList = new Stack<Commands> (), 
-      redoList = new Stack<Commands> ();
-
-  public static Map<Integer, Integer> cursorList = new HashMap<Integer, Integer>(); 
-
-  public enum Operation
+  
+  protected static Stack<Commands> undoList = new Stack<Commands> (); 
+  protected static Stack<Commands> redoList = new Stack<Commands> ();
+  public static Map<Integer, Integer> cursors = new HashMap<Integer, Integer>(); 
+  
+  public enum EventType
   {
     ADD, DELETE, CURSOR, INIT
   }
 
   protected static void initialize()
   { 
-      isTextSetManually = true;
-      cursorLoc = 0;
-
-      shadow = "";
+      setOnDevice = true;
+      cursorPos = 0;
+      correctText = "";
       lastsubId = -1;
-      needToSynchronize = false;  
+      unmatched = false;  
       numDiffMove = 0;
-
+      
       undoList = new Stack<Commands> (); 
       redoList = new Stack<Commands> ();
-
-      cursorList = new HashMap<Integer, Integer>();
-
-      cursorList.put(Id, 0);
+      
+      cursors = new HashMap<Integer, Integer>();
+      cursors.put(deviceId, 0);
   }
 
-  //update the displayed text with the proper text from shadow copy
-  protected static void Synchronize()
+  protected static void match()
   {
-    Log.d("wewrite", "59");
-    isTextSetManually = false;
-    Log.d("wewrite", "61");
-    editTextArea.setText(shadow);
-    Log.d("wewrite", "63 " + cursorList.get(Id));
-    editTextArea.setSelection(cursorList.get(Id));
-    Log.d("wewrite", "65");
-    cursorLoc =  cursorList.get(Id);
-    Log.d("wewrite", "67");
-
-    needToSynchronize = false;
+    setOnDevice = false;
+    editTextArea.setText(correctText);
+    editTextArea.setSelection(cursors.get(deviceId));
+    cursorPos =  cursors.get(deviceId);
+    unmatched = false;
     lastsubId = -1;
     numDiffMove = 0;
 
   }
 
-  /*
-   * implementation only called for SHADOW on RECEIVING Events
-   */
-  //update the "shadow copy" when an add is received
-  protected static void AddShadow(int userId, int count, String msg)
-  { 
-    int shadowCursor = cursorList.get(userId);
-    shadow = shadow.substring(0,shadowCursor) + msg + shadow.substring(shadowCursor, shadow.length());
-    Log.d("shadow", shadow);
-    for (Map.Entry entry : cursorList.entrySet())
-    { 
-      if ((Integer)entry.getValue() >= shadowCursor)
-        cursorList.put((Integer)entry.getKey(), (Integer)entry.getValue()+count);
-    }
-  } 
-
-  //update the "shadow copy" when a delete is received
-  protected static void DeleteShadow(int userId, int count) 
-  {
-    int shadowCursor = cursorList.get(userId);
-    
-    if (shadowCursor - count < 0)
-      shadow = shadow.substring(shadowCursor, shadow.length() );
-    else
-      shadow = shadow.substring(0, shadowCursor-count) + shadow.substring(shadowCursor, shadow.length());
-    Log.d("shadow", shadow);
-    for (Map.Entry entry : cursorList.entrySet())
-    { 
-      if ((Integer)entry.getValue() >= shadowCursor)
-        cursorList.put( (Integer)entry.getKey(), Math.max( (Integer)entry.getValue()-count, 0) );
-      else if ((Integer)entry.getValue() <= shadowCursor - count)
-      {}
-      else
-        cursorList.put((Integer)entry.getKey(), Math.max(shadowCursor-count, 0) );
-    }
-  }
-  
-   //update the "shadow copy" when a cursor change is received
-  protected static void CursorChangeShadow(int userId, int offset)
-  {
-    int toPosition = cursorList.get(userId) + offset;
-    
-    if (toPosition < 0)
-      toPosition = 0;
-    else if (toPosition > shadow.length())
-      toPosition = shadow.length();
-    
-    cursorList.put(userId, toPosition);
-  }
-
-  /*
-   * undo//redo when button pushed
-   */
   protected static Commands Undo()
   { 
       if (!undoList.empty())
@@ -133,7 +67,7 @@ public class TheDevice
         redoList.push(undoList.pop());
         return com;
       } 
-      else // if undo list is empty        
+      else         
         return null;
  }
    
@@ -145,8 +79,51 @@ public class TheDevice
       undoList.push(redoList.pop());      
       return com;
     } 
-    else // redo list is empty
+    else 
       return null;
   }
   
+  protected static void addToCorrectText(int userId, int count, String msg)
+  { 
+    int shadowCursor = cursors.get(userId);
+    correctText = correctText.substring(0,shadowCursor) + msg + correctText.substring(shadowCursor, correctText.length());
+
+    for (Map.Entry entry : cursors.entrySet())
+    { 
+      if ((Integer)entry.getValue() >= shadowCursor)
+        cursors.put((Integer)entry.getKey(), (Integer)entry.getValue() + count);
+    }
+  } 
+
+  protected static void deleteFromCorrectText(int userId, int count) 
+  {
+    int cursor = cursors.get(userId);
+    
+    if (cursor - count < 0)
+      correctText = correctText.substring(cursor, correctText.length());
+    else
+      correctText = correctText.substring(0, cursor - count) + correctText.substring(cursor, correctText.length());
+
+    for (Map.Entry entry : cursors.entrySet())
+    { 
+      if ((Integer)entry.getValue() >= cursor)
+        cursors.put( (Integer)entry.getKey(), Math.max((Integer)entry.getValue() - count, 0) );
+      else if ((Integer)entry.getValue() <= cursor - count)
+      {}
+      else
+        cursors.put((Integer)entry.getKey(), Math.max(cursor - count, 0) );
+    } 
+  }
+  
+  protected static void changeCursorCorrectText(int userId, int offset)
+  {
+    int dest = cursors.get(userId) + offset;
+    
+    if (dest < 0)
+      dest = 0;
+    else if (dest > correctText.length())
+      dest = correctText.length();
+    
+    cursors.put(userId, dest);
+  }  
 }
