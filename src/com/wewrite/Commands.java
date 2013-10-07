@@ -4,57 +4,51 @@ import android.util.Log;
 
 import com.wewrite.EventProtos.Event;
 
-//create user or variant that edits and synchronizes the text
-
-
 public class Commands
 {
-  TheDevice.Operation operation;
+  TheDevice.EventType operation;
   public int offset;
   public String mes;
   
-  public Commands(TheDevice.Operation operationT, String mesT, int offsetT)
+  public Commands(TheDevice.EventType operationT, String mesT, int offsetT)
   {
     operation = operationT;
     mes = mesT;
     offset = offsetT;  
   }
   
-  //create a move in the protocol buffer format
-  //to be sent to the Collabrify Client
   public Event generateMoveMes(int undo)
   {
     Event event;
-    if (undo != 1 && this.operation == TheDevice.Operation.ADD || 
-      (undo == 1  && this.operation == TheDevice.Operation.DELETE)) 
-    //either an add, or an undo on a delete
+    
+    if(undo != 1 && this.operation == TheDevice.EventType.DELETE || 
+        (undo == 1 && this.operation == TheDevice.EventType.ADD))
     {
       event = Event.newBuilder()
-          .setUserId(TheDevice.Id) 
-          .setMoveType(1)
-          .setData(this.mes)
-          .setCursorChange(this.offset)
-          .setUndo(undo)
-          .build();
-    }
-    else if(undo != 1 && this.operation == TheDevice.Operation.DELETE || 
-        (undo == 1 && this.operation == TheDevice.Operation.ADD))
-      //either a delete, or an undo on an add
-    {
-      event = Event.newBuilder()
-          .setUserId(TheDevice.Id)
+          .setUserId(TheDevice.deviceId)
           .setMoveType(2)
           .setData(this.mes)
           .setCursorChange(this.offset)
           .setUndo(undo)
           .build();
     }
-    else //a cursor move
+    else if (undo != 1 && this.operation == TheDevice.EventType.ADD || 
+      (undo == 1  && this.operation == TheDevice.EventType.DELETE)) 
+    {
+      event = Event.newBuilder()
+          .setUserId(TheDevice.deviceId) 
+          .setMoveType(1)
+          .setData(this.mes)
+          .setCursorChange(this.offset)
+          .setUndo(undo)
+          .build();
+    }
+    else 
     {
       if (undo == 1)
       {
         event = Event.newBuilder()
-            .setUserId(TheDevice.Id)
+            .setUserId(TheDevice.deviceId)
             .setMoveType(3)
             .setCursorChange(-this.offset)
             .setUndo(undo)
@@ -63,7 +57,7 @@ public class Commands
       else
       {
         event = Event.newBuilder()
-        .setUserId(TheDevice.Id) //need a user id
+        .setUserId(TheDevice.deviceId) 
         .setMoveType(3)
         .setCursorChange(this.offset)
         .setUndo(undo)
