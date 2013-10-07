@@ -204,10 +204,10 @@ public class CollabListener extends CollabrifyAdapter
   public void onSessionJoined(long maxOrderId, long baseFileSize)
   {
     Log.i(MainActivity.getTAG(), "Session Joined");
-   /* if( baseFileSize > 0 )
+   if( baseFileSize > 0 )
     {
       collabActivity.setBaseFileReceiveBuffer(new ByteArrayOutputStream((int) baseFileSize));
-    }*/
+    }
     collabActivity.runOnUiThread(new Runnable()
     {
       @Override

@@ -43,15 +43,15 @@ public class MainActivity extends Activity
   private static String TAG = "WeWrite";
   private String sessionName;
   private CollabrifyClient myClient;
-  //private CheckBox withBaseFile;
+  private CheckBox withBaseFile;
   private CollabrifyListener collabrifyListener;
   private ArrayList<String> tags = new ArrayList<String>();
   private MenuItem createSession;
   private MenuItem joinSession;
   private MenuItem leaveSession;
   private long sessionId;
-  //private ByteArrayInputStream baseFileBuffer;
-  //private ByteArrayOutputStream baseFileReceiveBuffer;
+  private ByteArrayInputStream baseFileBuffer;
+  private ByteArrayOutputStream baseFileReceiveBuffer;
   private cursorWatcher editTextArea;
   private long startTime;
   private int continuousCount = 0;
@@ -115,7 +115,7 @@ public class MainActivity extends Activity
         if( continuousCount != 0 )
           insertDeleteActions();
 
-        Commands com = TheDevice.Redo(); // broadcast move
+        Commands com = TheDevice.Redo(); 
         if( com != null )
         {
           Event retmove = com.generateMoveMes(2);
@@ -340,7 +340,7 @@ public class MainActivity extends Activity
   {
     this.myClient = myClient;
   }
-/*
+
   public ByteArrayOutputStream getBaseFileReceiveBuffer()
   {
     return baseFileReceiveBuffer;
@@ -351,7 +351,7 @@ public class MainActivity extends Activity
   {
     this.baseFileReceiveBuffer = baseFileReceiveBuffer;
   }
-*/
+
   public int getContinuousCount()
   {
     return continuousCount;
