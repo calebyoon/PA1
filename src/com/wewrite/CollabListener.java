@@ -12,145 +12,115 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.wewrite.EventProtos.Event;
 import com.wewrite.Commands;
 import com.wewrite.TheDevice;
-import com.wewrite.TheDevice.Operation;
+import com.wewrite.TheDevice.EventType;
 
 import edu.umich.imlc.android.common.Utils;
 import edu.umich.imlc.collabrify.client.CollabrifyAdapter;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
-public class CollabListener extends CollabrifyAdapter {
-  
+public class CollabListener extends CollabrifyAdapter
+{
   private MainActivity collabActivity;
-  
-  public CollabListener(MainActivity x)
+
+  public CollabListener(MainActivity mainActivity)
   {
-    this.collabActivity = x;
+    this.collabActivity = mainActivity;
   }
-  
+
   @Override
   public void onDisconnect()
   {
     Log.i(MainActivity.getTAG(), "disconnected");
     collabActivity.runOnUiThread(new Runnable()
     {
-
       @Override
       public void run()
       {
-        //createSession.setTitle("Create Session");
+        // createSession.setTitle("Create Session");
       }
     });
   }
 
   @Override
-  public void onReceiveEvent(final long orderId, final int subId,
-      String eventType, final byte[] data)
+  public void onReceiveEvent(final long orderId, final int subId, String eventType, final byte[] data)
   {
     Utils.printMethodName(MainActivity.getTAG());
-    Log.d(MainActivity.getTAG(), "RECEIVED SUB ID:" + subId);
-    
+
     collabActivity.runOnUiThread(new Runnable()
     {
       @Override
       public void run()
       {
-        try 
+        try
         {
-          //pull all the data from the protocol buffer
-          Event latestMove = Event.parseFrom(data); 
-          Log.d("undo", "latest move data " + latestMove.getUserId());
-          int userWhoMadeMove = latestMove.getUserId();
-          //if another user edits the document, all previous undo/redos
-          //can not be guaranteed to be legal moves
-          if (!TheDevice.undoList.empty())
-            Log.d("undo", TheDevice.undoList.peek().mes);
-          
-          if (userWhoMadeMove != TheDevice.Id) 
-          {
-            //TheDevice.undoList.clear();
-            //TheDevice.redoList.clear();
-            if (!TheDevice.undoList.empty())
-              TheDevice.undoList.pop();
-            
-          }
-          
           String moveData;
-          int moveType = latestMove.getMoveType();
-          int offsetValue = latestMove.getCursorChange();
-          int undoValue = latestMove.getUndo();
-          
+          Event newEvent = Event.parseFrom(data);
+          int currentDevice = newEvent.getUserId();
+          int moveType = newEvent.getMoveType();
+          int offsetValue = newEvent.getCursorChange();
+          int undoValue = newEvent.getUndo();
 
-          if (!TheDevice.cursorList.containsKey(userWhoMadeMove)) // new user
+          if( currentDevice != TheDevice.deviceId )
           {
-            TheDevice.cursorList.put(userWhoMadeMove, TheDevice.cursorList.get(TheDevice.Id) );
+            if( !TheDevice.undoList.empty() )
+              TheDevice.undoList.pop();
           }
-          
-          // ---add----
-          if (moveType == 1) 
+
+          if( !TheDevice.cursors.containsKey(currentDevice) ) 
+            TheDevice.cursors.put(currentDevice, TheDevice.cursors.get(TheDevice.deviceId));
+
+          if( moveType == 1 )
           {
-            moveData = latestMove.getData();
-            if (userWhoMadeMove == TheDevice.Id && undoValue != 1) //local move, so add to UndoList
+            moveData = newEvent.getData();
+            
+            if( currentDevice == TheDevice.deviceId && undoValue != 1 ) 
             {
-              Log.d("undo", TheDevice.Id + " " + userWhoMadeMove);
-              Commands com = new Commands(TheDevice.Operation.ADD, moveData, offsetValue);
+              Commands com = new Commands(TheDevice.EventType.ADD, moveData, offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.AddShadow(userWhoMadeMove, offsetValue,
-                moveData);
-
+            
+            TheDevice.addToCorrectText(currentDevice, offsetValue, moveData);
           }
-          // ---delete----
-          else if (moveType == 2) 
+          else if( moveType == 2 )
           {
-            moveData = latestMove.getData();
-            if (userWhoMadeMove == TheDevice.Id && undoValue  != 1) //local move, so add to UndoList
+            moveData = newEvent.getData();
+            
+            if( currentDevice == TheDevice.deviceId && undoValue != 1 ) 
             {
-              Commands com = new Commands(TheDevice.Operation.DELETE, moveData, offsetValue);
+              Commands com = new Commands(TheDevice.EventType.DELETE, moveData, offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.DeleteShadow(userWhoMadeMove, offsetValue);
+            
+            TheDevice.deleteFromCorrectText(currentDevice, offsetValue);
           }
-          // ---cursorChange----
           else
           {
-            if (userWhoMadeMove == TheDevice.Id && undoValue  != 1) //local move, so add to UndoList
+            if( currentDevice == TheDevice.deviceId && undoValue != 1 ) 
             {
-              Commands com = new Commands(TheDevice.Operation.CURSOR, null, offsetValue);
+              Commands com = new Commands(TheDevice.EventType.CURSOR, null, offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.CursorChangeShadow(userWhoMadeMove,
-                offsetValue);
+           
+            TheDevice.changeCursorCorrectText(currentDevice, offsetValue);
           }
 
-          // if synchronize texteditor is needed
-          if (userWhoMadeMove != TheDevice.Id || undoValue != 0)
-          {
+          if( currentDevice != TheDevice.deviceId || undoValue != 0 )
             TheDevice.numDiffMove++;
-          }
-          
-          
-          if (TheDevice.lastsubId == subId) //come back to this. changed to final. might be a problem later
+
+          if( TheDevice.lastsubId == subId ) 
           {
-
-            if (collabActivity.getContinuousCount() == 0 && TheDevice.numDiffMove > 0) // if local user is not typing
-            {
-              TheDevice.Synchronize();
-            }
-            else if (TheDevice.numDiffMove > 0)// if local user is typing, sync later
-            {               
-
-              TheDevice.needToSynchronize = true;
-            }
-            else //nothing is different from shadow
-            {
+            if( collabActivity.getContinuousCount() == 0 && TheDevice.numDiffMove > 0 ) 
+              TheDevice.match();
+            else if( TheDevice.numDiffMove > 0 )
+              TheDevice.unmatched = true;
+            else
               TheDevice.lastsubId = -1;
-            }
-
           }
-          
-        } 
-        catch (InvalidProtocolBufferException e) {
+
+        }
+        catch( InvalidProtocolBufferException e )
+        {
           Log.i("failed", "bad parse attempt: " + e);
           e.printStackTrace();
         }
@@ -166,7 +136,9 @@ public class CollabListener extends CollabrifyAdapter {
       Log.i(MainActivity.getTAG(), "No session available");
       return;
     }
+    
     List<String> sessionNames = new ArrayList<String>();
+    
     for( CollabrifySession s : sessionList )
     {
       sessionNames.add(s.name());
@@ -174,8 +146,7 @@ public class CollabListener extends CollabrifyAdapter {
 
     final AlertDialog.Builder builder = new AlertDialog.Builder(collabActivity);
 
-    builder.setTitle("Choose Session").setItems(
-        sessionNames.toArray(new String[sessionList.size()]),
+    builder.setTitle("Choose Session").setItems(sessionNames.toArray(new String[sessionList.size()]),
         new DialogInterface.OnClickListener()
         {
           @Override
@@ -196,7 +167,6 @@ public class CollabListener extends CollabrifyAdapter {
 
     collabActivity.runOnUiThread(new Runnable()
     {
-
       @Override
       public void run()
       {
@@ -212,13 +182,11 @@ public class CollabListener extends CollabrifyAdapter {
     collabActivity.setSessionId(id);
     collabActivity.runOnUiThread(new Runnable()
     {
-
       @Override
       public void run()
       {
-        //createSession.setEnabled(false);
         TheDevice.initialize();
-        
+
         collabActivity.getEditTextArea().setText("");
         collabActivity.setTheText("");
         collabActivity.setContinuousCount(0);
@@ -236,23 +204,18 @@ public class CollabListener extends CollabrifyAdapter {
   public void onSessionJoined(long maxOrderId, long baseFileSize)
   {
     Log.i(MainActivity.getTAG(), "Session Joined");
-    if( baseFileSize > 0 )
+   if( baseFileSize > 0 )
     {
-      // initialize buffer to receive base file
       collabActivity.setBaseFileReceiveBuffer(new ByteArrayOutputStream((int) baseFileSize));
     }
     collabActivity.runOnUiThread(new Runnable()
     {
-
       @Override
       public void run()
       {
-        //createSession.setTitle(sessionName);
         TheDevice.initialize();
-        //updated here
-        TheDevice.isTextSetManually = false; //change won't propogate
-        TheDevice.shadow = "";
-        //baseFileReceiveBuffer.toString();
+        TheDevice.setOnDevice = false; 
+        TheDevice.correctText = "";
         collabActivity.setTheText("");
         collabActivity.setContinuousCount(0);
       }
