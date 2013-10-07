@@ -102,7 +102,7 @@ public class CollabListener extends CollabrifyAdapter
                   offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.AddShadow(userWhoMadeMove, offsetValue, moveData);
+            TheDevice.AddfinalText(userWhoMadeMove, offsetValue, moveData);
 
           }
           // ---delete----
@@ -118,7 +118,7 @@ public class CollabListener extends CollabrifyAdapter
                   offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.DeleteShadow(userWhoMadeMove, offsetValue);
+            TheDevice.DeletefinalText(userWhoMadeMove, offsetValue);
           }
           // ---cursorChange----
           else
@@ -132,7 +132,7 @@ public class CollabListener extends CollabrifyAdapter
                   offsetValue);
               TheDevice.undoList.add(com);
             }
-            TheDevice.CursorChangeShadow(userWhoMadeMove, offsetValue);
+            TheDevice.CursorChangefinalText(userWhoMadeMove, offsetValue);
           }
 
           // if synchronize texteditor is needed
@@ -142,8 +142,8 @@ public class CollabListener extends CollabrifyAdapter
           }
 
 
-          if( TheDevice.lastsubId == subId ) // come back to this. changed to
-                                             // final. might be a problem later
+          if( TheDevice.lastEditor == subId ) // come back to this. changed to
+                                              // final. might be a problem later
           {
 
             if( collabActivity.getContinuousCount() == 0
@@ -160,7 +160,7 @@ public class CollabListener extends CollabrifyAdapter
             else
             // nothing is different from shadow
             {
-              TheDevice.lastsubId = -1;
+              TheDevice.lastEditor = -1;
             }
 
           }
@@ -269,8 +269,8 @@ public class CollabListener extends CollabrifyAdapter
         // createSession.setTitle(sessionName);
         TheDevice.initialize();
         // updated here
-        TheDevice.isTextSetManually = false; // change won't propogate
-        TheDevice.shadow = "";
+        TheDevice.manuallySet = false; // change won't propogate
+        TheDevice.finalText = "";
         // baseFileReceiveBuffer.toString();
         collabActivity.setTheText("");
         collabActivity.setContinuousCount(0);

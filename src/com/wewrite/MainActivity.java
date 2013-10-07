@@ -62,7 +62,7 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
     setContentView(R.layout.activity_main);
-    tags.add("amchr.csyoon test");
+    tags.add("amchr.csyoon");
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
@@ -181,7 +181,7 @@ public class MainActivity extends Activity
           int after)
       {
         // TODO Auto-generated method stub
-        if( TheDevice.isTextSetManually )
+        if( TheDevice.manuallySet )
         {
           if( count > after ) // for character delete
           {
@@ -203,7 +203,7 @@ public class MainActivity extends Activity
       public void onTextChanged(CharSequence s, int start, int before, int count)
       {
         // TODO Auto-generated method stub
-        if( TheDevice.isTextSetManually )
+        if( TheDevice.manuallySet )
         {
           if( count < before )
           {
@@ -231,7 +231,7 @@ public class MainActivity extends Activity
         }
         else
         {
-          TheDevice.isTextSetManually = true;
+          TheDevice.manuallySet = true;
         }
       }
 
@@ -292,7 +292,7 @@ public class MainActivity extends Activity
     // also one of the members needs to be from the protofile.
     try
     {
-      TheDevice.lastsubId = myClient.broadcast(retMove.toByteArray(), op);
+      TheDevice.lastEditor = myClient.broadcast(retMove.toByteArray(), op);
       TheDevice.needToSynchronize = false;
       Log.i("success", op + " broadcasting success");
     }
@@ -325,7 +325,7 @@ public class MainActivity extends Activity
         try
         {
           Random rand = new Random();
-          setSessionName("amchr.csyoon test " + rand.nextInt(Integer.MAX_VALUE));
+          setSessionName("amchr.csyoon" + rand.nextInt(Integer.MAX_VALUE));
 
           /*
            * if( false) { initialize basefile data for this example we will use
