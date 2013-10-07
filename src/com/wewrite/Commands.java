@@ -20,23 +20,24 @@ public class Commands
   public Event generateMoveMes(int undo)
   {
     Event event;
-    if (undo != 1 && this.operation == TheDevice.EventType.ADD || 
-      (undo == 1  && this.operation == TheDevice.EventType.DELETE)) 
-    {
-      event = Event.newBuilder()
-          .setUserId(TheDevice.deviceId) 
-          .setMoveType(1)
-          .setData(this.mes)
-          .setCursorChange(this.offset)
-          .setUndo(undo)
-          .build();
-    }
-    else if(undo != 1 && this.operation == TheDevice.EventType.DELETE || 
+    
+    if(undo != 1 && this.operation == TheDevice.EventType.DELETE || 
         (undo == 1 && this.operation == TheDevice.EventType.ADD))
     {
       event = Event.newBuilder()
           .setUserId(TheDevice.deviceId)
           .setMoveType(2)
+          .setData(this.mes)
+          .setCursorChange(this.offset)
+          .setUndo(undo)
+          .build();
+    }
+    else if (undo != 1 && this.operation == TheDevice.EventType.ADD || 
+      (undo == 1  && this.operation == TheDevice.EventType.DELETE)) 
+    {
+      event = Event.newBuilder()
+          .setUserId(TheDevice.deviceId) 
+          .setMoveType(1)
           .setData(this.mes)
           .setCursorChange(this.offset)
           .setUndo(undo)

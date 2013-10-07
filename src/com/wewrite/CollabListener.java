@@ -54,45 +54,44 @@ public class CollabListener extends CollabrifyAdapter
       {
         try
         {
+          String moveData;
           Event newEvent = Event.parseFrom(data);
           int currentDevice = newEvent.getUserId();
+          int moveType = newEvent.getMoveType();
+          int offsetValue = newEvent.getCursorChange();
+          int undoValue = newEvent.getUndo();
 
           if( currentDevice != TheDevice.deviceId )
           {
             if( !TheDevice.undoList.empty() )
               TheDevice.undoList.pop();
-
           }
-
-          String moveData;
-          int moveType = newEvent.getMoveType();
-          int offsetValue = newEvent.getCursorChange();
-          int undoValue = newEvent.getUndo();
 
           if( !TheDevice.cursors.containsKey(currentDevice) ) 
-          {
             TheDevice.cursors.put(currentDevice, TheDevice.cursors.get(TheDevice.deviceId));
-          }
 
           if( moveType == 1 )
           {
             moveData = newEvent.getData();
+            
             if( currentDevice == TheDevice.deviceId && undoValue != 1 ) 
             {
               Commands com = new Commands(TheDevice.EventType.ADD, moveData, offsetValue);
               TheDevice.undoList.add(com);
             }
+            
             TheDevice.addToCorrectText(currentDevice, offsetValue, moveData);
-
           }
           else if( moveType == 2 )
           {
             moveData = newEvent.getData();
+            
             if( currentDevice == TheDevice.deviceId && undoValue != 1 ) 
             {
               Commands com = new Commands(TheDevice.EventType.DELETE, moveData, offsetValue);
               TheDevice.undoList.add(com);
             }
+            
             TheDevice.deleteFromCorrectText(currentDevice, offsetValue);
           }
           else
@@ -102,14 +101,12 @@ public class CollabListener extends CollabrifyAdapter
               Commands com = new Commands(TheDevice.EventType.CURSOR, null, offsetValue);
               TheDevice.undoList.add(com);
             }
+           
             TheDevice.changeCursorCorrectText(currentDevice, offsetValue);
           }
 
           if( currentDevice != TheDevice.deviceId || undoValue != 0 )
-          {
             TheDevice.numDiffMove++;
-          }
-
 
           if( TheDevice.lastsubId == subId ) 
           {
@@ -139,7 +136,9 @@ public class CollabListener extends CollabrifyAdapter
       Log.i(MainActivity.getTAG(), "No session available");
       return;
     }
+    
     List<String> sessionNames = new ArrayList<String>();
+    
     for( CollabrifySession s : sessionList )
     {
       sessionNames.add(s.name());
@@ -183,7 +182,6 @@ public class CollabListener extends CollabrifyAdapter
     collabActivity.setSessionId(id);
     collabActivity.runOnUiThread(new Runnable()
     {
-
       @Override
       public void run()
       {

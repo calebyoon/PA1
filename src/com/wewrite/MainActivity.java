@@ -43,15 +43,15 @@ public class MainActivity extends Activity
   private static String TAG = "WeWrite";
   private String sessionName;
   private CollabrifyClient myClient;
-  private CheckBox withBaseFile;
+  //private CheckBox withBaseFile;
   private CollabrifyListener collabrifyListener;
   private ArrayList<String> tags = new ArrayList<String>();
   private MenuItem createSession;
   private MenuItem joinSession;
   private MenuItem leaveSession;
   private long sessionId;
-  private ByteArrayInputStream baseFileBuffer;
-  private ByteArrayOutputStream baseFileReceiveBuffer;
+  //private ByteArrayInputStream baseFileBuffer;
+  //private ByteArrayOutputStream baseFileReceiveBuffer;
   private cursorWatcher editTextArea;
   private long startTime;
   private int continuousCount = 0;
@@ -73,6 +73,8 @@ public class MainActivity extends Activity
     editTextArea.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     TheDevice.editTextArea = editTextArea;
     TheDevice.cursors.put(TheDevice.deviceId, 0);
+    Button redoButton = (Button) findViewById(R.id.redoButton);
+    Button undoButton = (Button) findViewById(R.id.undoButton);
 
     new Thread()
     {
@@ -81,8 +83,7 @@ public class MainActivity extends Activity
         startTime = System.currentTimeMillis();
         while( true )
         {
-          if( System.currentTimeMillis() - startTime >= 600
-              && getContinuousCount() != 0 )
+          if( getContinuousCount() != 0 && System.currentTimeMillis() - startTime >= 600 )
             insertDeleteActions();
           else if( getContinuousCount() == 0 && TheDevice.unmatched )
             TheDevice.match();
@@ -90,20 +91,13 @@ public class MainActivity extends Activity
       }
     }.start();
 
-
-    Button redoButton = (Button) findViewById(R.id.redoButton);
-    Button undoButton = (Button) findViewById(R.id.undoButton);
-
     undoButton.setOnClickListener(new OnClickListener()
     {
       @Override
       public void onClick(View v)
       {
-
         if( continuousCount != 0 )
-        {
           insertDeleteActions();
-        }
 
         Commands com = TheDevice.Undo();
         if( com != null )
@@ -119,9 +113,7 @@ public class MainActivity extends Activity
       public void onClick(View v)
       {
         if( continuousCount != 0 )
-        {
           insertDeleteActions();
-        }
 
         Commands com = TheDevice.Redo(); // broadcast move
         if( com != null )
@@ -148,18 +140,16 @@ public class MainActivity extends Activity
               getEditTextArea().setSelection(cursorNewLoc);
               TheDevice.cursorPos = cursorNewLoc;
 
-              Commands com = new Commands(TheDevice.EventType.CURSOR, null,
-                  offset);
+              Commands com = new Commands(TheDevice.EventType.CURSOR, null, offset);
               Event retmove = com.generateMoveMes(0); 
               broadcastText(retmove, "cur");
-
               TheDevice.redoList.clear();
             }
           }
         });
 
     getEditTextArea().addTextChangedListener(new TextWatcher()
-    {
+    {      
       @Override
       public void afterTextChanged(Editable arg0)
       {
@@ -168,49 +158,37 @@ public class MainActivity extends Activity
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after)
       {
-        if( TheDevice.setOnDevice )
+        if( TheDevice.setOnDevice && count > after)
         {
-          if( count > after ) 
-          {
             if( getContinuousCount() > 0 )
               insertDeleteActions();
 
             startTime = System.currentTimeMillis();
             continuousCount--;
             theText = s.toString().substring(start, start + count) + theText;
-          }
         }
       }
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count)
       {
-        if( TheDevice.setOnDevice )
+        if( TheDevice.setOnDevice && count > before)
         {
-          if( count < before )
-          {
-          }
-          else if( count > before )
-          {
             if( getContinuousCount() < 0 )
               insertDeleteActions();
 
             startTime = System.currentTimeMillis();
             continuousCount++;
             theText += s.toString().substring(start, start + count);
-          }
-          else
-          {
-          }
         }
-        else
+        else if( !TheDevice.setOnDevice)
           TheDevice.setOnDevice = true;
       }
     });
     
-    boolean getLatestEvent = false;
     collabrifyListener = new CollabListener(this);
-
+    boolean getLatestEvent = false;
+    
     try
     {
       setMyClient(new CollabrifyClient(this, "csyoon@umich.edu", "csyoon",
@@ -225,29 +203,24 @@ public class MainActivity extends Activity
 
   private void insertDeleteActions()
   {
-    Event retmove;
+    Event action;
     if( continuousCount > 0 ) 
     {
       TheDevice.cursorPos += continuousCount;
-
       Commands com = new Commands(TheDevice.EventType.ADD, getTheText(), continuousCount);
-
-      retmove = com.generateMoveMes(0);
-      broadcastText(retmove, "add");
+      action = com.generateMoveMes(0);
+      broadcastText(action, "add");
     }
     else
     {
       TheDevice.cursorPos += continuousCount;
-
       Commands com = new Commands(TheDevice.EventType.DELETE, getTheText(), -continuousCount);
-
-      retmove = com.generateMoveMes(0);
-      broadcastText(retmove, "del");
+      action = com.generateMoveMes(0);
+      broadcastText(action, "del");
     }
 
     continuousCount = 0;
     setTheText(getTheText().substring(0, 0));
-
     TheDevice.redoList.clear();
   }
 
@@ -280,9 +253,9 @@ public class MainActivity extends Activity
     createSession = (MenuItem) findViewById(R.id.createSession);
     joinSession = (MenuItem) findViewById(R.id.joinSession);
     leaveSession = (MenuItem) findViewById(R.id.leaveSession);
+   
     switch ( item.getItemId() )
     {
-
       case R.id.createSession:
         try
         {
@@ -311,9 +284,7 @@ public class MainActivity extends Activity
         try
         {
           if( getMyClient().inSession() )
-          {
             getMyClient().leaveSession(false);
-          }
         }
         catch( CollabrifyException e )
         {
@@ -369,7 +340,7 @@ public class MainActivity extends Activity
   {
     this.myClient = myClient;
   }
-
+/*
   public ByteArrayOutputStream getBaseFileReceiveBuffer()
   {
     return baseFileReceiveBuffer;
@@ -380,7 +351,7 @@ public class MainActivity extends Activity
   {
     this.baseFileReceiveBuffer = baseFileReceiveBuffer;
   }
-
+*/
   public int getContinuousCount()
   {
     return continuousCount;

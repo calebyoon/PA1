@@ -22,9 +22,9 @@ public class TheDevice
   public static boolean unmatched = false;  
   public static int numDiffMove = 0;
   
-  public static Map<Integer, Integer> cursors = new HashMap<Integer, Integer>(); 
   protected static Stack<Commands> undoList = new Stack<Commands> (); 
   protected static Stack<Commands> redoList = new Stack<Commands> ();
+  public static Map<Integer, Integer> cursors = new HashMap<Integer, Integer>(); 
   
   public enum EventType
   {
@@ -53,7 +53,6 @@ public class TheDevice
     editTextArea.setText(correctText);
     editTextArea.setSelection(cursors.get(deviceId));
     cursorPos =  cursors.get(deviceId);
-
     unmatched = false;
     lastsubId = -1;
     numDiffMove = 0;
