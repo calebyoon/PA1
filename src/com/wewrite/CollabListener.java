@@ -143,7 +143,7 @@ public class CollabListener extends CollabrifyAdapter
 
 
           if( TheDevice.lastEditor == subId ) // come back to this. changed to
-                                              // final. might be a problem later
+                                             // final. might be a problem later
           {
 
             if( collabActivity.getContinuousCount() == 0
