@@ -13,7 +13,6 @@ import android.widget.EditText;
 
 public class TheDevice
 {
-<<<<<<< HEAD
   protected static int Id = new Random().nextInt();
   protected static cursorWatcher editTextArea;
   protected static boolean manuallySet = true;
@@ -31,28 +30,11 @@ public class TheDevice
   public static Map<Integer, Integer> cursorList = new HashMap<Integer, Integer>();
 
   public enum Operation
-=======
-  protected static int deviceId = new Random().nextInt(); 
-  protected static cursorWatcher editTextArea;
-  protected static boolean setOnDevice = true;
-  protected static int cursorPos = 0;
-  public static String correctText = ""; 
-  public static int lastsubId = -1;
-  public static boolean unmatched = false;  
-  public static int numDiffMove = 0;
-  
-  protected static Stack<Commands> undoList = new Stack<Commands> (); 
-  protected static Stack<Commands> redoList = new Stack<Commands> ();
-  public static Map<Integer, Integer> cursors = new HashMap<Integer, Integer>(); 
-  
-  public enum EventType
->>>>>>> c624e9cddff429ce37da161ff83459444382a2ca
   {
     ADD, DELETE, CURSOR, INIT
   }
 
   protected static void initialize()
-<<<<<<< HEAD
   {
     manuallySet = true;
     cursorLoc = 0;
@@ -85,36 +67,10 @@ public class TheDevice
 
     needToSynchronize = false;
     lastEditor = -1;
-=======
-  { 
-      setOnDevice = true;
-      cursorPos = 0;
-      correctText = "";
-      lastsubId = -1;
-      unmatched = false;  
-      numDiffMove = 0;
-      
-      undoList = new Stack<Commands> (); 
-      redoList = new Stack<Commands> ();
-      
-      cursors = new HashMap<Integer, Integer>();
-      cursors.put(deviceId, 0);
-  }
-
-  protected static void match()
-  {
-    setOnDevice = false;
-    editTextArea.setText(correctText);
-    editTextArea.setSelection(cursors.get(deviceId));
-    cursorPos =  cursors.get(deviceId);
-    unmatched = false;
-    lastsubId = -1;
->>>>>>> c624e9cddff429ce37da161ff83459444382a2ca
     numDiffMove = 0;
 
   }
 
-<<<<<<< HEAD
   /*
    * implementation only called for finalText on RECEIVING Events
    */
@@ -186,21 +142,7 @@ public class TheDevice
       // if undo list is empty
       return null;
   }
-
-=======
-  protected static Commands Undo()
-  { 
-      if (!undoList.empty())
-      {
-        Commands com = undoList.lastElement();   
-        redoList.push(undoList.pop());
-        return com;
-      } 
-      else         
-        return null;
- }
-   
->>>>>>> c624e9cddff429ce37da161ff83459444382a2ca
+  
   protected static Commands Redo()
   {
     if( !redoList.empty() )
@@ -208,20 +150,11 @@ public class TheDevice
       Commands com = redoList.lastElement();
       undoList.push(redoList.pop());
       return com;
-<<<<<<< HEAD
-    }
-    else
-      // redo list is empty
-      return null;
-  }
-
-}
-=======
     } 
     else 
       return null;
   }
-  
+  /*
   protected static void addToCorrectText(int userId, int count, String msg)
   { 
     int shadowCursor = cursors.get(userId);
@@ -265,5 +198,6 @@ public class TheDevice
     
     cursors.put(userId, dest);
   }  
+*/
 }
->>>>>>> c624e9cddff429ce37da161ff83459444382a2ca
+
